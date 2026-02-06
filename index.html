@@ -3,198 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qrestige | الاحترافية المطلقة</title>
+    <title>Qrestige | النسخة المستقرة</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        :root {
-            --brand: #0f172a;
-            --accent: #6366f1;
-            --bg: #f8fafc;
-            --border: #e2e8f0;
-        }
-
+        :root { --brand: #0f172a; --accent: #6366f1; --bg: #f8fafc; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif !important; }
-        
-        body { 
-            background: var(--bg); color: var(--brand); margin: 0; 
-            display: flex; height: 100vh; overflow: hidden; 
-        }
+        body { background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* القائمة الجانبية */
         .sidebar {
-            width: 380px; background: white; border-left: 1px solid var(--border);
-            padding: 35px; display: flex; flex-direction: column; overflow-y: auto;
-            z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.02);
+            width: 380px; background: white; border-left: 1px solid #e2e8f0;
+            padding: 30px; display: flex; flex-direction: column; overflow-y: auto;
         }
 
-        .logo-container { text-align: center; margin-bottom: 40px; }
-        .logo { font-weight: 900; font-size: 38px; color: var(--brand); letter-spacing: -1.5px; }
-
-        .section-label { 
-            font-size: 11px; font-weight: 800; color: #94a3b8; 
-            text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 0.5px;
-        }
+        .logo { font-weight: 900; font-size: 35px; color: var(--brand); text-align: center; margin-bottom: 30px; }
+        .label { font-size: 12px; font-weight: 800; color: #94a3b8; margin: 15px 0 5px; }
 
         input[type="text"] {
-            width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border);
-            font-size: 15px; outline: none; background: #fcfdfe;
+            width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; outline: none;
         }
-        input:focus { border-color: var(--accent); }
 
-        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .color-item { 
-            border: 1.5px solid var(--border); border-radius: 12px; padding: 10px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        input[type="color"] { width: 30px; height: 30px; border: none; cursor: pointer; background: none; }
-
-        /* منطقة المعاينة */
-        .preview-area { 
-            flex: 1; display: flex; align-items: center; justify-content: center; 
-            background: #f1f5f9; padding: 40px; 
-        }
+        .preview-area { flex: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; }
         
-        #render-box {
-            background: white; padding: 60px; border-radius: 40px;
+        /* الحاوية المستهدفة للتحميل */
+        #export-wrap {
+            background: white; padding: 50px; border-radius: 40px;
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.04);
-            width: 500px; transition: 0.3s;
+            width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.05);
         }
 
-        #render-box.transparent { background: none !important; box-shadow: none; border: 2px dashed var(--accent); }
+        .qr-text { margin-top: 25px; font-size: 32px; font-weight: 900; color: var(--brand); text-align: center; }
 
-        .text-preview {
-            margin-top: 30px; font-size: 32px; font-weight: 900;
-            color: var(--brand); text-align: center; width: 100%;
-        }
-
-        /* الأزرار */
-        .btn-download {
+        .btn-save {
             background: var(--brand); color: white; border: none; padding: 18px;
-            border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer;
-            margin-top: auto;
+            border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto;
         }
-        .btn-download:hover { background: #1e293b; transform: translateY(-2px); }
+        .btn-save:hover { background: #1e293b; }
 
-        .btn-svg {
-            background: white; color: var(--brand); border: 1.5px solid var(--border);
-            padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; cursor: pointer;
-        }
-
-        #buffer-zone { position: absolute; left: -9999px; }
+        #temp-buffer { position: absolute; left: -9999px; top: 0; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="logo-container">
-            <div class="logo">Qrestige</div>
-        </div>
+        <div class="logo">Qrestige</div>
         
-        <div class="section-label">البيانات</div>
-        <input type="text" id="data" placeholder="الرابط أو النص هنا..." oninput="refresh()">
+        <div class="label">الرابط</div>
+        <input type="text" id="in-data" placeholder="https://..." oninput="draw()">
 
-        <div class="section-label">النص السفلي</div>
-        <input type="text" id="label" placeholder="مثلاً: امسحني" oninput="refresh()">
+        <div class="label">النص السفلي</div>
+        <input type="text" id="in-label" placeholder="مثلاً: تابعنا هنا" oninput="draw()">
 
-        <div class="section-label">ألوان الكود</div>
-        <div class="color-grid">
-            <div class="color-item"><label>البدء</label><input type="color" id="c1" value="#0f172a" oninput="refresh()"></div>
-            <div class="color-item"><label>الانتهاء</label><input type="color" id="c2" value="#334155" oninput="refresh()"></div>
+        <div class="label">الألوان</div>
+        <div style="display: flex; gap: 10px;">
+            <input type="color" id="c1" value="#0f172a" oninput="draw()" style="flex:1; height: 40px;">
+            <input type="color" id="c2" value="#6366f1" oninput="draw()" style="flex:1; height: 40px;">
         </div>
 
-        <div class="section-label">الشعار (Logo)</div>
-        <input type="file" id="logo" accept="image/*" onchange="refresh()">
+        <div class="label">الشعار</div>
+        <input type="file" id="logo-file" onchange="draw()">
 
-        <div style="margin-top: 25px;">
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 600;">
-                <input type="checkbox" id="trans" onchange="refresh()"> خلفية شفافة
-            </label>
-        </div>
-
-        <button class="btn-download" onclick="savePNG()">تحميل التصميم كاملاً PNG</button>
-        <button class="btn-svg" onclick="qr.download({extension:'svg'})">تحميل الكود فقط SVG</button>
+        <button class="btn-save" onclick="downloadFullDesign()">تحميل التصميم كامل PNG</button>
     </aside>
 
     <main class="preview-area">
-        <div id="render-box">
-            <div id="qr-space"></div>
-            <div id="text-space" class="text-preview">امسح الكود</div>
+        <div id="export-wrap">
+            <div id="qr-container"></div>
+            <div id="text-display" class="qr-text">امسح الكود</div>
         </div>
     </main>
 
-    <div id="buffer-zone"></div>
+    <div id="temp-buffer"></div>
 
 <script>
     const qr = new QRCodeStyling({
-        width: 360, height: 360,
+        width: 350, height: 350,
         dotsOptions: { type: "extra-rounded" },
         backgroundOptions: { color: "#ffffff" },
-        imageOptions: { crossOrigin: "anonymous", margin: 8, imageSize: 0.4 }
+        imageOptions: { crossOrigin: "anonymous", margin: 10, imageSize: 0.4 }
     });
 
-    qr.append(document.getElementById("qr-space"));
+    qr.append(document.getElementById("qr-container"));
 
-    function refresh() {
-        const d = document.getElementById('data').value || "https://google.com";
-        const t = document.getElementById('label').value || "امسح الكود";
+    function draw() {
+        const d = document.getElementById('in-data').value || "https://google.com";
+        const l = document.getElementById('in-label').value || "امسح الكود";
         const color1 = document.getElementById('c1').value;
         const color2 = document.getElementById('c2').value;
-        const isTrans = document.getElementById('trans').checked;
-        const logoFile = document.getElementById('logo').files[0];
+        const file = document.getElementById('logo-file').files[0];
 
-        const box = document.getElementById('render-box');
-        const txt = document.getElementById('text-space');
-
-        txt.innerText = t;
-        if(isTrans) {
-            box.classList.add('transparent');
-            txt.style.color = color1;
-        } else {
-            box.classList.remove('transparent');
-            txt.style.color = "#0f172a";
-        }
+        document.getElementById('text-display').innerText = l;
 
         qr.update({
             data: d,
-            dotsOptions: { 
-                gradient: { type: "linear", colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] }
-            },
-            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
+            dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] } },
             cornersSquareOptions: { color: color1 }
         });
 
-        if (logoFile) {
+        if (file) {
             const reader = new FileReader();
             reader.onload = (e) => qr.update({ image: e.target.result });
-            reader.readAsDataURL(logoFile);
+            reader.readAsDataURL(file);
         }
     }
 
-    async function savePNG() {
-        const original = document.getElementById('render-box');
-        const buffer = document.getElementById('buffer-zone');
+    async function downloadFullDesign() {
+        // خطوة 1: تحويل الـ QR إلى صورة Canvas ثابتة داخل العنصر لمنع اختفائه
+        const qrCanvas = document.querySelector('#qr-container canvas');
+        if (!qrCanvas) return alert("يرجى الانتظار ثانية حتى يتم رسم الكود");
+
+        const container = document.getElementById('export-wrap');
+        const buffer = document.getElementById('temp-buffer');
+        
+        // خطوة 2: إنشاء نسخة مطابقة (Clone) في منطقة الحفظ
         buffer.innerHTML = "";
-        const clone = original.cloneNode(true);
-        clone.style.width = "600px"; 
-        clone.style.transform = "none";
+        const clone = container.cloneNode(true);
+        clone.style.width = "600px";
         buffer.appendChild(clone);
 
+        // خطوة 3: التقاط الصورة بدقة عالية 3x
         setTimeout(async () => {
-            const canvas = await html2canvas(clone, { scale: 3, backgroundColor: null });
+            const canvas = await html2canvas(clone, {
+                scale: 3,
+                backgroundColor: "#ffffff",
+                useCORS: true,
+                allowTaint: true
+            });
+
             const link = document.createElement('a');
-            link.download = `Qrestige_Official.png`;
+            link.download = `Qrestige_Design.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             buffer.innerHTML = "";
-        }, 150);
+        }, 300); // مهلة انتظار بسيطة لضمان الرندر
     }
 
-    refresh();
+    draw();
 </script>
 </body>
 </html>
