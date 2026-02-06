@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد QR Code مع ميزة التحميل</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; width: 380px; }
+        h2 { color: #1a73e8; margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 14px; margin-bottom: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 15px; }
+        input:focus { border-color: #1a73e8; box-shadow: 0 0 8px rgba(26,115,232,0.2); }
+        .buttons { display: flex; gap: 10px; flex-direction: column; }
+        button { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; }
+        .btn-gen { background-color: #1a73e8; color: white; }
+        .btn-gen:hover { background-color: #1557b0; }
+        .btn-down { background-color: #34a853; color: white; display: none; margin-top: 10px; text-decoration: none; line-height: 2.5; }
+        .btn-down:hover { background-color: #2d8e47; }
+        #qrcode { margin-top: 25px; display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 10px; }
+        canvas { max-width: 100%; border: 2px solid #eee; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>مولد QR Code ذكي</h2>
+    <input type="text" id="text" placeholder="أدخل الرابط أو النص هنا...">
+    
+    <div class="buttons">
+        <button class="btn-gen" onclick="generateQR()">إنشاء الرمز</button>
+        <a id="downloadLink" class="btn-down" download="qrcode.png">تحميل الصورة بجودة عالية</a>
+    </div>
+
+    <div id="qrcode"></div>
+</div>
+
+<script>
+    // تهيئة مكتبة QR Code
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width: 250,
+        height: 250,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    function generateQR() {
+        var elInput = document.getElementById("text");
+        var downloadBtn = document.getElementById("downloadLink");
+
+        if (!elInput.value.trim()) {
+            alert("يرجى إدخال رابط أو نص أولاً!");
+            return;
+        }
+
+        // إنشاء الرمز
+        qrcode.makeCode(elInput.value);
+
+        // إظهار زر التحميل بعد فترة قصيرة لضمان توليد الصورة
+        setTimeout(function() {
+            var canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                var image = canvas.toDataURL("image/png");
+                downloadBtn.href = image;
+                downloadBtn.style.display = "block";
+            }
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
