@@ -11,207 +11,125 @@
   <!-- QR Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Tajawal', sans-serif;
-    }
-
+    * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
     body {
-      margin: 0;
-      min-height: 100vh;
+      margin: 0; min-height: 100vh;
       background: linear-gradient(135deg, #0f172a, #312e81);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
+      display: flex; align-items: center; justify-content: center;
     }
-
     .container {
-      background: #ffffff;
-      color: #111827;
-      width: 100%;
-      max-width: 900px;
-      border-radius: 24px;
-      padding: 30px;
+      background: #fff; width: 100%; max-width: 1000px;
+      border-radius: 24px; padding: 30px;
       box-shadow: 0 30px 60px rgba(0,0,0,0.3);
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-      font-size: 32px;
-      font-weight: 900;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 30px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-    }
-
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    label {
-      font-weight: 700;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-
-    input[type="color"] {
-      padding: 4px;
-      height: 45px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: linear-gradient(135deg, #4f46e5, #9333ea);
-      color: #fff;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .qr-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: 2px dashed #e5e7eb;
-      border-radius: 20px;
-      padding: 20px;
-      min-height: 320px;
-    }
-
-    #qrcode {
-      margin-bottom: 15px;
-    }
-
-    .download {
-      margin-top: 10px;
-      background: #10b981;
-    }
-
-    .note {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #6b7280;
-      text-align: center;
-    }
+    h1 { text-align: center; font-weight: 900; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #6b7280; margin-bottom: 30px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    @media (max-width: 768px){ .grid{ grid-template-columns:1fr;} }
+    label { font-weight: 700; display: block; margin-bottom: 6px; }
+    input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #d1d5db; margin-bottom: 15px; }
+    input[type=color]{ height: 45px; padding: 4px; }
+    button { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
+    .primary { background: linear-gradient(135deg, #4f46e5, #9333ea); color: #fff; }
+    .secondary { background:#10b981; color:#fff; margin-top:10px; }
+    .qr-box { border:2px dashed #e5e7eb; border-radius:20px; padding:20px; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>مولّد رمز QR الذكي</h1>
-    <p class="subtitle">أنشئ رمز QR احترافي بروابط، ألوان، وأحجام مخصصة</p>
+<div class="container">
+  <h1>مولّد رمز QR الذكي</h1>
+  <p class="subtitle">خيارات احترافية: خلفية شفافة، تدرّج لوني، وحفظ PDF</p>
 
-    <div class="grid">
-      <!-- Settings -->
-      <div>
-        <label>النص أو الرابط</label>
-        <input type="text" id="text" placeholder="https://example.com" />
+  <div class="grid">
+    <div>
+      <label>النص أو الرابط</label>
+      <input id="text" placeholder="https://example.com" />
 
-        <label>حجم الرمز</label>
-        <select id="size">
-          <option value="150">صغير</option>
-          <option value="200" selected>متوسط</option>
-          <option value="300">كبير</option>
-        </select>
+      <label>الحجم</label>
+      <select id="size">
+        <option value="200">متوسط</option>
+        <option value="300">كبير</option>
+        <option value="400">كبير جدًا</option>
+      </select>
 
-        <label>لون الرمز</label>
-        <input type="color" id="darkColor" value="#000000" />
+      <label>لون البداية (تدرّج)</label>
+      <input type="color" id="color1" value="#000000" />
 
-        <label>لون الخلفية</label>
-        <input type="color" id="lightColor" value="#ffffff" />
+      <label>لون النهاية (تدرّج)</label>
+      <input type="color" id="color2" value="#4f46e5" />
 
-        <label>مستوى تصحيح الخطأ</label>
-        <select id="level">
-          <option value="L">منخفض</option>
-          <option value="M">متوسط</option>
-          <option value="Q">عالٍ</option>
-          <option value="H" selected>عالٍ جدًا</option>
-        </select>
+      <label>الخلفية</label>
+      <select id="bgMode">
+        <option value="white">بيضاء</option>
+        <option value="transparent">شفافة</option>
+      </select>
 
-        <button onclick="generateQR()">إنشاء رمز QR</button>
-      </div>
-
-      <!-- QR Result -->
-      <div class="qr-box">
-        <div id="qrcode"></div>
-        <button class="download" onclick="downloadQR()">تحميل الرمز كصورة</button>
-      </div>
+      <button class="primary" onclick="generateQR()">إنشاء QR</button>
     </div>
 
-    <p class="note">هذا الموقع يعمل محليًا ولا يرسل أي بيانات إلى الإنترنت</p>
+    <div class="qr-box">
+      <canvas id="canvas"></canvas>
+      <button class="secondary" onclick="downloadPNG()">تحميل PNG</button>
+      <button class="secondary" onclick="downloadPDF()">تحميل PDF</button>
+    </div>
   </div>
+</div>
 
-  <script>
-    let qr;
+<script>
+let qr;
 
-    function generateQR() {
-      const text = document.getElementById('text').value.trim();
-      const size = parseInt(document.getElementById('size').value);
-      const darkColor = document.getElementById('darkColor').value;
-      const lightColor = document.getElementById('lightColor').value;
-      const level = document.getElementById('level').value;
-      const container = document.getElementById('qrcode');
+function generateQR(){
+  const text = document.getElementById('text').value.trim();
+  if(!text){ alert('أدخل نصًا أو رابطًا'); return; }
 
-      container.innerHTML = '';
+  const size = parseInt(document.getElementById('size').value);
+  const bgMode = document.getElementById('bgMode').value;
 
-      if (!text) {
-        alert('يرجى إدخال نص أو رابط');
-        return;
-      }
+  const temp = document.createElement('div');
+  qr = new QRCode(temp, { text, width:size, height:size, colorDark:'#000', colorLight:bgMode==='transparent'?'rgba(0,0,0,0)':'#fff' });
 
-      qr = new QRCode(container, {
-        text: text,
-        width: size,
-        height: size,
-        colorDark: darkColor,
-        colorLight: lightColor,
-        correctLevel: QRCode.CorrectLevel[level]
-      });
-    }
+  const qrCanvas = temp.querySelector('canvas');
+  const canvas = document.getElementById('canvas');
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
 
-    function downloadQR() {
-      const img = document.querySelector('#qrcode img');
-      if (!img) {
-        alert('قم بإنشاء رمز QR أولاً');
-        return;
-      }
-      const link = document.createElement('a');
-      link.href = img.src;
-      link.download = 'qr-code.png';
-      link.click();
-    }
-  </script>
+  if(bgMode === 'white'){
+    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
+  }
+
+  const grad = ctx.createLinearGradient(0,0,size,size);
+  grad.addColorStop(0, document.getElementById('color1').value);
+  grad.addColorStop(1, document.getElementById('color2').value);
+
+  ctx.fillStyle = grad;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.drawImage(qrCanvas,0,0);
+}
+
+function downloadPNG(){
+  const canvas = document.getElementById('canvas');
+  if(!canvas.width){ alert('أنشئ QR أولاً'); return; }
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = 'qr-code.png';
+  a.click();
+}
+
+function downloadPDF(){
+  const canvas = document.getElementById('canvas');
+  if(!canvas.width){ alert('أنشئ QR أولاً'); return; }
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+  const img = canvas.toDataURL('image/png');
+  pdf.addImage(img,'PNG',20,20,170,170);
+  pdf.save('qr-code.pdf');
+}
+</script>
 
 </body>
 </html>
