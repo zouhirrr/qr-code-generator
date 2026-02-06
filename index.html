@@ -3,215 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Studio Pro | Ultimate Edition 2026</title>
+    <title>QR Studio Elite | الـمـسـتـقـبـل</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
     
     <style>
         :root {
-            --primary: #6366f1;
-            --secondary: #f43f5e;
-            --accent: #10b981;
-            --bg: #030712;
-            --card: rgba(17, 24, 39, 0.9);
-            --border: rgba(255, 255, 255, 0.1);
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --surface: #0a0a0f;
+            --card: #14141d;
+            --border: rgba(255, 255, 255, 0.08);
         }
+
+        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            color: #f9fafb; margin: 0; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1), transparent);
+            background: var(--surface);
+            color: #e0e0e0; margin: 0; min-height: 100vh;
+            display: flex; flex-direction: column;
         }
 
-        /* Navbar */
+        /* نافبار فائق النحافة */
         nav {
-            padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
+            height: 70px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
         }
 
-        .brand-logo { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 1.8rem; }
-        .logo-glyph { background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 45px; height: 45px; border-radius: 14px; display: grid; place-items: center; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
+        .logo { font-weight: 900; font-size: 1.4rem; color: #fff; letter-spacing: 1px; }
+        .logo span { color: var(--primary); }
 
-        /* Main Layout */
-        .dashboard {
-            max-width: 1440px; margin: 2rem auto; display: grid; grid-template-columns: 420px 1fr; gap: 2.5rem; padding: 0 2rem;
+        .app-container {
+            display: flex; flex: 1; height: calc(100vh - 70px);
         }
 
-        @media (max-width: 1100px) { .dashboard { grid-template-columns: 1fr; } }
-
-        /* Controls Sidebar */
-        .settings-panel {
-            display: flex; flex-direction: column; gap: 1.5rem; max-height: 85vh; overflow-y: auto; padding-right: 5px;
-        }
-        .settings-panel::-webkit-scrollbar { width: 4px; }
-        .settings-panel::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-
-        .widget { background: var(--card); border: 1px solid var(--border); border-radius: 30px; padding: 1.8rem; }
-        .widget-title { font-size: 0.8rem; font-weight: 800; color: #6b7280; text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
-        .widget-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-        /* Inputs & Selects */
-        .input-box { width: 100%; background: #000; border: 1px solid var(--border); border-radius: 15px; padding: 15px; color: white; font-family: inherit; margin-bottom: 1rem; }
-        .input-box:focus { border-color: var(--primary); outline: none; }
-
-        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
-        .preset-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 10px; font-size: 0.75rem; color: white; cursor: pointer; }
-        .preset-btn:hover { border-color: var(--primary); background: rgba(99,102,241,0.1); }
-
-        /* Preview Canvas */
-        .preview-area { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
-        
-        #capture-node {
-            background: #ffffff; padding: 60px; border-radius: 50px; text-align: center;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.6); border: 15px solid #f8fafc;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* الجانب الأيمن: أدوات التحكم */
+        .sidebar {
+            width: 400px; background: var(--card); border-left: 1px solid var(--border);
+            padding: 30px; overflow-y: auto;
         }
 
-        #capture-node.transparent { background: transparent !important; border-color: var(--primary) !important; box-shadow: none; }
+        .group-title { font-size: 0.75rem; font-weight: 700; color: #555; text-transform: uppercase; margin: 25px 0 15px; letter-spacing: 2px; }
 
-        .custom-label {
-            margin-top: 25px; font-weight: 900; font-size: 1.8rem; color: #0f172a; 
-            line-height: 1.2; direction: rtl;
+        .control-input {
+            width: 100%; background: #000; border: 1px solid var(--border);
+            border-radius: 12px; padding: 14px; color: #fff; font-family: inherit; margin-bottom: 15px;
+        }
+        .control-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
+
+        .color-row { display: flex; gap: 10px; }
+        .color-item { flex: 1; background: #000; border-radius: 12px; padding: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        input[type="color"] { width: 30px; height: 30px; border: none; background: none; cursor: pointer; }
+
+        /* الجانب الأيسر: منطقة العرض */
+        .viewer {
+            flex: 1; background: #050507; display: flex; align-items: center; justify-content: center;
+            padding: 40px; position: relative;
         }
 
-        /* Quality Indicator */
-        .score-card { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent); border-radius: 100px; padding: 8px 20px; font-size: 0.8rem; color: var(--accent); margin-bottom: 2rem; }
-
-        /* Export Bar */
-        .export-bar { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; width: 100%; max-width: 500px; }
-        .download-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; border: none; padding: 22px; border-radius: 20px; font-weight: 900; font-size: 1.2rem; cursor: pointer;
-            box-shadow: 0 15px 30px rgba(244, 63, 94, 0.3);
+        /* منطقة التصميم (التي سيتم تصويرها) */
+        #render-target {
+            background: #ffffff; padding: 60px; border-radius: 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+            border: 2px solid transparent; min-width: 450px;
         }
-        .download-btn:hover { transform: scale(1.02); }
 
+        #render-target.transparent { background: transparent !important; border: 4px dashed var(--primary); box-shadow: none; }
+
+        .frame-text {
+            margin-top: 30px; font-weight: 900; font-size: 2.2rem; color: #000;
+            text-align: center; direction: rtl; line-height: 1;
+        }
+
+        /* أزرار التحميل السفلية */
+        .floating-actions {
+            position: absolute; bottom: 40px; display: flex; gap: 15px;
+        }
+
+        .btn-download {
+            background: #fff; color: #000; border: none; padding: 18px 40px;
+            border-radius: 15px; font-weight: 900; font-size: 1rem; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+        .btn-download:hover { transform: translateY(-5px); background: var(--primary); }
+
+        .btn-ghost {
+            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border);
+            padding: 18px 25px; border-radius: 15px; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="brand-logo">
-        <div class="logo-glyph">QR</div>
-        <span>STUDIO <span style="color: var(--secondary)">ULTIMATE</span></span>
-    </div>
-    <div class="score-card" id="scan-score">● جودة الكود: مثالية للمسح</div>
+    <div class="logo">QR<span>STUDIO</span> ELITE</div>
+    <div id="status" style="font-size: 0.8rem; color: #444;">IDLE / READY</div>
 </nav>
 
-<main class="dashboard">
-    <aside class="settings-panel">
-        <div class="widget">
-            <div class="widget-title">1. قوالب سريعة (Presets)</div>
-            <div class="preset-grid">
-                <button class="preset-btn" onclick="applyPreset('#6366f1', '#ec4899', 'extra-rounded')">مودرن</button>
-                <button class="preset-btn" onclick="applyPreset('#10b981', '#059669', 'square')">طبي</button>
-                <button class="preset-btn" onclick="applyPreset('#f59e0b', '#d97706', 'dots')">ذهبي</button>
-            </div>
-
-            <div class="widget-title">2. المحتوى والنص</div>
-            <input type="text" id="qr-data" class="input-box" placeholder="الرابط (URL)" oninput="sync()">
-            <input type="text" id="qr-text" class="input-box" placeholder="النص تحت الكود (مثلاً: امسحني)" oninput="sync()">
+<div class="app-container">
+    <div class="viewer">
+        <div id="render-target">
+            <div id="canvas-container"></div>
+            <div id="live-text" class="frame-text">امسح الكود</div>
         </div>
 
-        <div class="widget">
-            <div class="widget-title">3. الهوية البصرية</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <label style="font-size: 0.7rem; color: #6b7280;">اللون الأساسي</label>
-                    <input type="color" id="c1" value="#6366f1" oninput="sync()" style="width:100%; height:40px; border:none; background:none; cursor:pointer;">
-                </div>
-                <div>
-                    <label style="font-size: 0.7rem; color: #6b7280;">اللون الثانوي</label>
-                    <input type="color" id="c2" value="#f43f5e" oninput="sync()" style="width:100%; height:40px; border:none; background:none; cursor:pointer;">
-                </div>
-            </div>
+        <div class="floating-actions">
+            <button class="btn-download" onclick="exportFullImage()">تحميل التصميم كامل (PNG HD)</button>
+            <button class="btn-ghost" onclick="rawExport('svg')">SVG</button>
+            <button class="btn-ghost" onclick="rawExport('pdf')">PDF</button>
+        </div>
+    </div>
 
-            <div style="margin-top: 1.5rem;">
-                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                    <input type="checkbox" id="trans-toggle" onchange="sync()" style="width: 22px; height: 22px; accent-color: var(--primary);">
-                    <span style="font-weight: 700;">تفعيل الشفافية المطلقة</span>
-                </label>
+    <aside class="sidebar">
+        <div class="group-title">البيانات</div>
+        <input type="text" id="data-in" class="control-input" placeholder="أدخل الرابط هنا..." oninput="refresh()">
+        
+        <div class="group-title">نص الإطار</div>
+        <input type="text" id="text-in" class="control-input" placeholder="مثال: تابعنا على إنستغرام" oninput="refresh()">
+
+        <div class="group-title">الألوان</div>
+        <div class="color-row">
+            <div class="color-item">
+                <input type="color" id="c1" value="#7000ff" oninput="refresh()">
+                <span style="font-size: 0.7rem;">الأساسي</span>
+            </div>
+            <div class="color-item">
+                <input type="color" id="c2" value="#00f2ff" oninput="updateQR()">
+                <span style="font-size: 0.7rem;">الثانوي</span>
             </div>
         </div>
 
-        <div class="widget">
-            <div class="widget-title">4. متقدم</div>
-            <select id="dot-style" class="input-box" onchange="sync()">
-                <option value="extra-rounded">نقاط دائرية</option>
-                <option value="square">مربعات</option>
-                <option value="classy">كلاسيك</option>
-            </select>
-            <input type="file" id="logo-in" class="input-box" onchange="sync()" style="font-size: 0.8rem;">
-        </div>
+        <div class="group-title">خيارات متقدمة</div>
+        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; cursor: pointer;">
+            <input type="checkbox" id="is-trans" onchange="refresh()" style="width: 20px; height: 20px;">
+            <span>خلفية شفافة</span>
+        </label>
+
+        <select id="dot-type" class="control-input" onchange="refresh()">
+            <option value="extra-rounded">نقاط دائرية</option>
+            <option value="square">مربعات</option>
+            <option value="dots">نقاط ناعمة</option>
+        </select>
+
+        <input type="file" id="logo-in" class="control-input" onchange="refresh()">
     </aside>
-
-    <section class="preview-area">
-        <div id="capture-node">
-            <div id="canvas-target"></div>
-            <div id="label-target" class="custom-label">امسح الكود</div>
-        </div>
-
-        <div class="export-bar">
-            <button class="download-btn" onclick="takeSnapshot()">💾 حفظ التصميم النهائي (PNG HD)</button>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="preset-btn" style="padding: 15px;" onclick="rawDown('svg')">تحميل كملف SVG</button>
-                <button class="preset-btn" style="padding: 15px;" onclick="rawDown('pdf')">تحميل كملف PDF</button>
-            </div>
-        </div>
-    </section>
-</main>
+</div>
 
 <script>
     const qrModel = new QRCodeStyling({
-        width: 320, height: 320,
-        dotsOptions: { type: "extra-rounded", gradient: { type: "linear", colorStops: [{ offset: 0, color: "#6366f1" }, { offset: 1, color: "#f43f5e" }] } },
+        width: 350, height: 350,
+        dotsOptions: { type: "extra-rounded", gradient: { type: "linear", colorStops: [{ offset: 0, color: "#7000ff" }, { offset: 1, color: "#00f2ff" }] } },
         backgroundOptions: { color: "#ffffff" },
         cornersSquareOptions: { type: "extra-rounded" }
     });
 
-    qrModel.append(document.getElementById("canvas-target"));
+    qrModel.append(document.getElementById("canvas-container"));
 
-    function applyPreset(col1, col2, style) {
-        document.getElementById('c1').value = col1;
-        document.getElementById('c2').value = col2;
-        document.getElementById('dot-style').value = style;
-        sync();
-    }
-
-    function sync() {
-        const data = document.getElementById('qr-data').value || "https://google.com";
-        const text = document.getElementById('qr-text').value || "امسح الكود";
-        const col1 = document.getElementById('c1').value;
-        const col2 = document.getElementById('c2').value;
-        const isTrans = document.getElementById('trans-toggle').checked;
-        const style = document.getElementById('dot-style').value;
+    function refresh() {
+        const d = document.getElementById('data-in').value || "https://google.com";
+        const t = document.getElementById('text-in').value || "امسح الكود";
+        const c1 = document.getElementById('c1').value;
+        const c2 = document.getElementById('c2').value;
+        const isT = document.getElementById('is-trans').checked;
+        const style = document.getElementById('dot-type').value;
         const logo = document.getElementById('logo-in').files[0];
 
+        const target = document.getElementById('render-target');
+        const liveText = document.getElementById('live-text');
+
         // تحديث الواجهة
-        const node = document.getElementById('capture-node');
-        const label = document.getElementById('label-target');
-        
-        label.innerText = text;
-        
-        if(isTrans) {
-            node.classList.add('transparent');
-            label.style.color = col1;
+        liveText.innerText = t;
+        if(isT) {
+            target.classList.add('transparent');
+            liveText.style.color = c1;
         } else {
-            node.classList.remove('transparent');
-            label.style.color = "#0f172a";
-            node.style.borderColor = col1;
+            target.classList.remove('transparent');
+            liveText.style.color = "#000";
         }
 
-        // تحديث الـ QR
+        // تحديث الكود
         qrModel.update({
-            data: data,
-            dotsOptions: { type: style, gradient: { type: "linear", colorStops: [{ offset: 0, color: col1 }, { offset: 1, color: col2 }] } },
-            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
-            cornersSquareOptions: { color: col1 }
+            data: d,
+            dotsOptions: { type: style, gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
+            backgroundOptions: { color: isT ? "transparent" : "#ffffff" },
+            cornersSquareOptions: { color: c1 }
         });
 
         if (logo) {
@@ -219,45 +200,43 @@
             reader.onload = (e) => qrModel.update({ image: e.target.result });
             reader.readAsDataURL(logo);
         }
-
-        // تحديث عداد الجودة (بناءً على طول البيانات)
-        const score = document.getElementById('scan-score');
-        if(data.length > 150) {
-            score.innerText = "● الجودة: متوسطة (البيانات كثيرة)";
-            score.style.color = "#f59e0b";
-            score.style.borderColor = "#f59e0b";
-        } else {
-            score.innerText = "● جودة الكود: مثالية للمسح";
-            score.style.color = "#10b981";
-            score.style.borderColor = "#10b981";
-        }
     }
 
-    async function takeSnapshot() {
-        const node = document.getElementById('capture-node');
-        const scale = 4; // دقة جبارة
+    // الحل النهائي لمشكلة "نصف الصورة" والحروف المقطعة
+    function exportFullImage() {
+        const node = document.getElementById('render-target');
+        const status = document.getElementById('status');
+        status.innerText = "PROCESSING...";
 
-        domtoimage.toPng(node, {
-            width: node.offsetWidth * scale,
-            height: node.offsetHeight * scale,
+        // إعدادات تصوير فائقة الدقة
+        const options = {
+            width: node.scrollWidth,
+            height: node.scrollHeight,
             style: {
-                transform: 'scale(' + scale + ')',
+                transform: 'scale(2)',
                 transformOrigin: 'top left',
                 width: node.offsetWidth + 'px',
                 height: node.offsetHeight + 'px'
             }
-        })
-        .then(function (dataUrl) {
-            const link = document.createElement('a');
-            link.download = `QR_ULTIMATE_${Date.now()}.png`;
-            link.href = dataUrl;
-            link.click();
-        });
+        };
+
+        domtoimage.toPng(node, options)
+            .then(function (dataUrl) {
+                const link = document.createElement('a');
+                link.download = `QR-Studio-Pro-2026.png`;
+                link.href = dataUrl;
+                link.click();
+                status.innerText = "READY / DOWNLOADED";
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                status.innerText = "ERROR";
+            });
     }
 
-    function rawDown(ext) { qrModel.download({ extension: ext }); }
+    function rawExport(ext) { qrModel.download({ extension: ext }); }
 
-    sync();
+    refresh();
 </script>
 
 </body>
