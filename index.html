@@ -2,97 +2,144 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Qrestige | Pro Designer Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+    <title>Qrestige | Pro PDF Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
         :root { --brand: #0f172a; --accent: #6366f1; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif !important; }
         body { background: #f1f5f9; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 350px; background: white; border-left: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; }
-        .logo { font-weight: 900; font-size: 30px; text-align: center; margin-bottom: 20px; color: var(--brand); }
+        
+        .sidebar { width: 360px; background: white; border-left: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; }
+        .logo { font-weight: 900; font-size: 32px; text-align: center; color: var(--brand); margin-bottom: 25px; }
+        
         .label { font-size: 11px; font-weight: 800; color: #94a3b8; margin-top: 15px; text-transform: uppercase; }
-        input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; outline: none; margin-bottom: 10px; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 5px; outline: none; }
+        
         .viewer { flex: 1; display: flex; align-items: center; justify-content: center; }
-        #export-frame { background: white; padding: 50px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-        #export-frame.is-trans { background: none !important; box-shadow: none; border: 2px dashed var(--accent); }
-        .qr-text { margin-top: 20px; font-size: 30px; font-weight: 900; text-align: center; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .btn-png { background: var(--brand); color: white; }
-        .btn-svg { background: #fff; color: var(--brand); border: 2px solid var(--brand); }
+        
+        /* إطار التصميم الرئيسي */
+        #main-frame { 
+            background: white; padding: 60px; border-radius: 50px; 
+            display: flex; flex-direction: column; align-items: center; 
+            width: 520px; box-shadow: 0 30px 60px rgba(0,0,0,0.06); 
+        }
+        #main-frame.transparent-mode { background: none !important; box-shadow: none; border: 3px dashed var(--accent); }
+
+        .qr-text { margin-top: 30px; font-size: 34px; font-weight: 900; text-align: center; color: var(--brand); }
+        
+        .btn-group { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .btn-pdf { background: var(--brand); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; }
+        .btn-png { background: white; color: var(--brand); border: 2px solid var(--brand); padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div class="logo">Qrestige</div>
-        <div class="label">المحتوى</div>
-        <input type="text" id="data" placeholder="الرابط هنا" oninput="draw()">
-        <div class="label">النص</div>
-        <input type="text" id="text" placeholder="مثلاً: تابعنا" oninput="draw()">
+        
+        <div class="label">البيانات</div>
+        <input type="text" id="data-in" placeholder="أدخل الرابط" oninput="update()">
+        
+        <div class="label">النص السفلي (تجوال)</div>
+        <input type="text" id="text-in" placeholder="امسح الكود" oninput="update()">
+
         <div class="label">الألوان</div>
         <div style="display:flex; gap:10px;">
-            <input type="color" id="c1" value="#0f172a" oninput="draw()" style="flex:1; height:40px;">
-            <input type="color" id="c2" value="#6366f1" oninput="draw()" style="flex:1; height:40px;">
+            <input type="color" id="c1" value="#0f172a" oninput="update()" style="flex:1; height:45px; cursor:pointer;">
+            <input type="color" id="c2" value="#6366f1" oninput="update()" style="flex:1; height:45px; cursor:pointer;">
         </div>
-        <div class="label">الشعار</div>
-        <input type="file" id="logo" onchange="draw()">
-        <div style="margin-top:20px;">
-            <label><input type="checkbox" id="trans" onchange="draw()"> خلفية شفافة</label>
+
+        <div class="label">توسيط الشعار</div>
+        <input type="file" id="logo-in" onchange="update()">
+
+        <div style="margin-top: 20px;">
+            <label style="cursor:pointer; font-weight: 700;">
+                <input type="checkbox" id="is-trans" onchange="update()"> خلفية شفافة
+            </label>
         </div>
-        <div style="margin-top:auto;">
-            <button class="btn btn-png" onclick="downloadPNG()">حفظ PNG (للعرض)</button>
-            <button class="btn btn-svg" onclick="downloadAffinitySVG()">حفظ SVG (لبرامج التصميم)</button>
+
+        <div class="btn-group">
+            <button class="btn-pdf" onclick="exportPDF()">حفظ كملف PDF احترافي</button>
+            <button class="btn-png" onclick="exportPNG()">حفظ كصورة PNG</button>
         </div>
     </aside>
 
     <main class="viewer">
-        <div id="export-frame">
+        <div id="main-frame">
             <div id="qr-target"></div>
             <div id="text-target" class="qr-text">امسح الكود</div>
         </div>
     </main>
 
 <script>
+    const { jsPDF } = window.jspdf;
+
     const qr = new QRCodeStyling({
-        width: 350, height: 350,
+        width: 380, height: 380,
         dotsOptions: { type: "extra-rounded" },
         backgroundOptions: { color: "#ffffff" },
-        imageOptions: { crossOrigin: "anonymous", margin: 10, imageSize: 0.4 }
+        imageOptions: { crossOrigin: "anonymous", margin: 12, imageSize: 0.4 }
     });
 
     qr.append(document.getElementById("qr-target"));
 
-    function draw() {
-        const d = document.getElementById('data').value || "https://google.com";
-        const t = document.getElementById('text').value || "امسح الكود";
+    function update() {
+        const d = document.getElementById('data-in').value || "https://google.com";
+        const t = document.getElementById('text-in').value || "امسح الكود";
         const col1 = document.getElementById('c1').value;
         const col2 = document.getElementById('c2').value;
-        const isTrans = document.getElementById('trans').checked;
-        const file = document.getElementById('logo').files[0];
+        const trans = document.getElementById('is-trans').checked;
+        const logo = document.getElementById('logo-in').files[0];
 
-        document.getElementById('text-target').innerText = t;
-        document.getElementById('text-target').style.color = isTrans ? col1 : "#0f172a";
-        document.getElementById('export-frame').className = isTrans ? 'is-trans' : '';
+        const frame = document.getElementById('main-frame');
+        const label = document.getElementById('text-target');
+
+        label.innerText = t;
+        label.style.color = trans ? col1 : "#0f172a";
+        frame.className = trans ? 'transparent-mode' : '';
 
         qr.update({
             data: d,
             dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: col1 }, { offset: 1, color: col2 }] } },
-            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
+            backgroundOptions: { color: trans ? "transparent" : "#ffffff" },
             cornersSquareOptions: { color: col1 }
         });
 
-        if (file) {
+        if (logo) {
             const reader = new FileReader();
             reader.onload = (e) => qr.update({ image: e.target.result });
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(logo);
         }
     }
 
-    // تصدير PNG مضمون الظهور
-    async function downloadPNG() {
-        const frame = document.getElementById('export-frame');
+    // وظيفة تصدير PDF العبقرية
+    async function exportPDF() {
+        const frame = document.getElementById('main-frame');
+        
+        // تحويل الإطار إلى كانفاس عالي الدقة
+        const canvas = await html2canvas(frame, { 
+            scale: 4, 
+            backgroundColor: null,
+            useCORS: true 
+        });
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: [canvas.width / 2, canvas.height / 2]
+        });
+
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+        pdf.save("Qrestige_Official_Print.pdf");
+    }
+
+    async function exportPNG() {
+        const frame = document.getElementById('main-frame');
         const canvas = await html2canvas(frame, { scale: 3, backgroundColor: null, useCORS: true });
         const link = document.createElement('a');
         link.download = 'Qrestige_Design.png';
@@ -100,14 +147,7 @@
         link.click();
     }
 
-    // تصدير SVG متوافق مع Affinity و Illustrator
-    function downloadAffinitySVG() {
-        // نستخدم التصدير الخام للمكتبة لكن مع التأكد من النوع
-        qr.download({ name: "Qrestige_Affinity_Ready", extension: "svg" });
-        alert("نصيحة: عند فتح الملف في Affinity، تأكد من اختيار 'Group' لرؤية كافة الطبقات.");
-    }
-
-    draw();
+    update();
 </script>
 </body>
 </html>
