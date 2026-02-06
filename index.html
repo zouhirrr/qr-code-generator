@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Elite Designer | النسخة الشاملة 2026</title>
+    <title>QR Elite Designer | الإصدار النهائي المصلح</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
@@ -54,19 +54,25 @@
             width: 100%; background: rgba(15, 23, 42, 0.8); border: 1.5px solid var(--border);
             border-radius: 18px; padding: 16px; color: white; font-family: 'Tajawal'; margin-bottom: 15px; box-sizing: border-box; transition: 0.3s;
         }
-        .input-field:focus { border-color: var(--primary); outline: none; }
 
         .toggle-group {
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 20px;
+            background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--primary);
         }
 
         .preview-side { position: sticky; top: 100px; text-align: center; }
 
-        /* منطقة التصميم القابلة للالتقاط */
+        /* منطقة التصميم - تم تعديل الخلفية لتكون متغيرة */
         .capture-container {
-            background: white; padding: 40px; border-radius: 40px; display: inline-block;
-            margin-bottom: 25px; color: #0f172a; border: 8px solid #1e293b; transition: 0.3s;
+            background: #ffffff; /* افتراضي أبيض */
+            padding: 40px; border-radius: 40px; display: inline-block;
+            margin-bottom: 25px; border: 8px solid #1e293b; transition: 0.3s;
+        }
+
+        /* حالة الشفافية */
+        .capture-container.transparent-mode {
+            background: transparent !important;
+            border-color: var(--primary);
         }
 
         .qr-label-display {
@@ -74,18 +80,19 @@
             max-width: 280px; word-wrap: break-word; line-height: 1.2;
         }
 
-        /* أزرار التحميل */
+        .capture-container.transparent-mode .qr-label-display {
+            color: var(--primary) !important; /* تغيير لون النص ليظهر على الخلفية الداكنة */
+        }
+
         .btn-main {
             width: 100%; padding: 18px; border-radius: 18px; border: none;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-bottom: 10px;
         }
-        .format-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-sub {
             background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border);
-            padding: 12px; border-radius: 12px; cursor: pointer; font-family: 'Tajawal'; transition: 0.3s;
+            padding: 12px; border-radius: 12px; cursor: pointer; font-family: 'Tajawal'; transition: 0.3s; width: 48%;
         }
-        .btn-sub:hover { background: var(--primary); }
     </style>
 </head>
 <body>
@@ -96,33 +103,30 @@
 
 <main class="main-wrapper">
     <div class="control-panel">
-        <div class="section-tag">1. المحتوى والروابط</div>
+        <div class="section-tag">1. المحتوى</div>
         <input type="text" id="qr-input" class="input-field" placeholder="ضع الرابط هنا..." oninput="updateQR()">
 
-        <div class="section-tag">2. نص الإطار المخصص</div>
-        <input type="text" id="frame-text-input" class="input-field" 
-               style="border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.05);"
-               placeholder="مثال: امسح لحجز موعد" oninput="updateFrameText(this.value)">
+        <div class="section-tag">2. نص الإطار</div>
+        <input type="text" id="frame-text-input" class="input-field" placeholder="اكتب نصاً تحت الكود..." oninput="updateFrameText(this.value)">
 
         <div class="section-tag">3. الألوان والشفافية</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <input type="color" id="color1" value="#6366f1" oninput="updateQR()" style="width:100%; height:45px; cursor:pointer;">
-            <input type="color" id="color2" value="#a855f7" oninput="updateQR()" style="width:100%; height:45px; cursor:pointer;">
+            <input type="color" id="color1" value="#6366f1" oninput="updateQR()">
+            <input type="color" id="color2" value="#a855f7" oninput="updateQR()">
         </div>
         
         <div class="toggle-group">
-            <span>خلفية شفافة (للكود فقط)</span>
-            <input type="checkbox" id="is-transparent" onchange="updateQR()" style="width:20px; height:20px; cursor:pointer;">
+            <span>تفعيل الشفافية الكاملة</span>
+            <input type="checkbox" id="is-transparent" onchange="updateQR()" style="width:25px; height:25px;">
         </div>
 
-        <div class="section-tag">4. تخصيصات متقدمة</div>
+        <div class="section-tag">4. النمط والشعار</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <select id="dot-style" class="input-field" onchange="updateQR()">
-                <option value="extra-rounded">نقاط دائرية</option>
-                <option value="square">مربعات</option>
-                <option value="dots">نقاط ناعمة</option>
+                <option value="extra-rounded">دائري</option>
+                <option value="square">مربع</option>
             </select>
-            <input type="file" id="logo-file" accept="image/*" onchange="updateQR()" class="input-field" style="padding:10px; font-size:0.7rem;">
+            <input type="file" id="logo-file" accept="image/*" onchange="updateQR()" class="input-field">
         </div>
     </div>
 
@@ -132,25 +136,19 @@
             <div id="display-text" class="qr-label-display">امسح الكود</div>
         </div>
 
-        <button class="btn-main" onclick="downloadFullImage()">تحميل التصميم بالإطار (PNG)</button>
-        
-        <div class="format-grid">
-            <button class="btn-sub" onclick="exportCore('svg')">تحميل SVG</button>
-            <button class="btn-sub" onclick="exportCore('pdf')">تحميل PDF</button>
+        <button class="btn-main" onclick="downloadFullImage()">تحميل التصميم الشفاف (PNG)</button>
+        <div style="display: flex; justify-content: space-between;">
+            <button class="btn-sub" onclick="exportCore('svg')">SVG</button>
+            <button class="btn-sub" onclick="exportCore('pdf')">PDF</button>
         </div>
-        <p style="margin-top:15px; color: var(--text-muted); font-size: 0.8rem;">ملاحظة: SVG و PDF يحملان الكود فقط بدون الإطار للطباعة الاحترافية.</p>
     </div>
 </main>
 
 <script>
     const qrStyling = new QRCodeStyling({
-        width: 280, height: 280, data: "https://google.com",
-        dotsOptions: {
-            type: "extra-rounded",
-            gradient: { type: "linear", rotation: 45, colorStops: [{ offset: 0, color: "#6366f1" }, { offset: 1, color: "#a855f7" }] }
-        },
-        backgroundOptions: { color: "#ffffff" },
-        cornersSquareOptions: { type: "extra-rounded", color: "#6366f1" }
+        width: 280, height: 280,
+        dotsOptions: { type: "extra-rounded", gradient: { type: "linear", colorStops: [{ offset: 0, color: "#6366f1" }, { offset: 1, color: "#a855f7" }] } },
+        backgroundOptions: { color: "#ffffff" }
     });
 
     qrStyling.append(document.getElementById("qr-canvas"));
@@ -160,19 +158,25 @@
     }
 
     function updateQR() {
-        const dataStr = document.getElementById("qr-input").value || " ";
+        const dataStr = document.getElementById("qr-input").value || "https://google.com";
         const c1 = document.getElementById("color1").value;
         const c2 = document.getElementById("color2").value;
         const trans = document.getElementById("is-transparent").checked;
         const style = document.getElementById("dot-style").value;
         const file = document.getElementById("logo-file").files[0];
 
+        // تحديث الحاوية الخارجية
+        const zone = document.getElementById('capture-zone');
+        if (trans) {
+            zone.classList.add('transparent-mode');
+        } else {
+            zone.classList.remove('transparent-mode');
+        }
+
+        // تحديث الكود
         qrStyling.update({
             data: dataStr,
-            dotsOptions: {
-                type: style,
-                gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] }
-            },
+            dotsOptions: { type: style, gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
             backgroundOptions: { color: trans ? "transparent" : "#ffffff" },
             cornersSquareOptions: { color: c1 }
         });
@@ -182,26 +186,31 @@
             reader.onload = (e) => qrStyling.update({ image: e.target.result });
             reader.readAsDataURL(file);
         }
-        
-        // مزامنة لون نص الإطار مع لون الكود
-        document.getElementById('display-text').style.color = c1;
-        document.getElementById('capture-zone').style.borderColor = c1;
+
+        document.getElementById('display-text').style.color = trans ? c1 : "#1e293b";
+        zone.style.borderColor = c1;
     }
 
-    // وظيفة تحميل الإطار + الكود (PNG)
     async function downloadFullImage() {
         const zone = document.getElementById('capture-zone');
-        const canvas = await html2canvas(zone, { scale: 3, backgroundColor: null });
+        // أهم خطوة: جعل html2canvas يصور خلفية شفافة
+        const canvas = await html2canvas(zone, { 
+            backgroundColor: null, 
+            scale: 3,
+            logging: false 
+        });
         const link = document.createElement('a');
-        link.download = 'Elite-Full-Design.png';
-        link.href = canvas.toDataURL();
+        link.download = 'Elite-QR-Transparent.png';
+        link.href = canvas.toDataURL("image/png");
         link.click();
     }
 
-    // وظيفة تحميل الكود الصافي (SVG / PDF)
     function exportCore(ext) {
-        qrStyling.download({ name: "Elite-QR-Core", extension: ext });
+        qrStyling.download({ name: "Core-QR", extension: ext });
     }
+    
+    // تشغيل التحديث الأول لضبط الألوان
+    updateQR();
 </script>
 
 </body>
