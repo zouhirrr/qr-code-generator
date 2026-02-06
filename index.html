@@ -121,7 +121,20 @@ function repaintQR(){
   grad.addColorStop(1, document.getElementById('color2').value);
 
   ctx.drawImage(baseQRCanvas,0,0,size,size);
-  ctx.globalCompositeOperation = 'source-in';
+  ctx.// إصلاح مشكلة الكتلة الواحدة: نرسم التدرج ثم نطبّق قناع QR
+ctx.clearRect(0,0,size,size);
+
+// رسم التدرج
+const grad = ctx.createLinearGradient(0,0,size,size);
+grad.addColorStop(0, color1);
+grad.addColorStop(1, color2);
+ctx.fillStyle = grad;
+ctx.fillRect(0,0,size,size);
+
+// قناع QR (الحفاظ على المربعات)
+ctx.globalCompositeOperation = 'destination-in';
+ctx.drawImage(qrCanvas,0,0,size,size);
+ctx.globalCompositeOperation = 'source-over'; = 'source-in';
   ctx.fillStyle = grad;
   ctx.fillRect(0,0,size,size);
   ctx.globalCompositeOperation = 'source-over';
