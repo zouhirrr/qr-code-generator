@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qrestige | الاستوديو الذكي</title>
+    <title>Qrestige | Ultimate Intelligent Studio</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
@@ -15,55 +15,55 @@
             --dark: #0f172a;
             --surface: #f8fafc;
             --border: #e2e8f0;
+            --warning: #ef4444;
         }
 
-        * { box-sizing: border-box; transition: 0.3s; font-family: 'Tajawal', sans-serif !important; }
+        * { box-sizing: border-box; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-family: 'Tajawal', sans-serif !important; }
         
         body { background: var(--surface); color: var(--dark); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar */
+        /* Sidebar الاستوديو */
         .sidebar {
-            width: 380px; background: white; border-left: 1px solid var(--border);
-            padding: 30px; display: flex; flex-direction: column; overflow-y: auto; z-index: 20;
+            width: 400px; background: white; border-left: 1px solid var(--border);
+            padding: 25px; display: flex; flex-direction: column; overflow-y: auto; z-index: 20;
+            box-shadow: 10px 0 50px rgba(0,0,0,0.03);
         }
 
-        .logo-area { text-align: center; margin-bottom: 30px; }
-        .logo { font-weight: 900; font-size: 35px; color: var(--brand); letter-spacing: -1.5px; }
-        .version { font-size: 10px; background: #eeefff; color: var(--brand); padding: 2px 8px; border-radius: 10px; font-weight: 800; }
+        .logo-box { text-align: center; margin-bottom: 25px; border-bottom: 2px solid var(--surface); padding-bottom: 15px; }
+        .logo { font-weight: 900; font-size: 38px; color: var(--brand); letter-spacing: -2px; }
 
-        .section-label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; margin-top: 15px; }
+        .section-label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin: 15px 0 8px; display: flex; justify-content: space-between; }
 
         input[type="text"], select {
-            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border); font-size: 15px; outline: none;
+            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border); font-size: 15px; outline: none; background: #fcfcfd;
         }
 
-        /* الذكاء: أزرار سريعة */
-        .smart-tools { display: flex; gap: 8px; margin-top: 10px; }
-        .tool-btn { flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; font-weight: 700; }
-        .tool-btn:hover { background: var(--brand); color: white; border-color: var(--brand); }
+        /* تنبيهات ذكية */
+        .smart-alert { font-size: 11px; font-weight: 700; color: var(--warning); margin-top: 5px; display: none; padding: 5px; border-radius: 5px; background: rgba(239, 68, 68, 0.05); }
 
         .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .color-box { border: 1.5px solid var(--border); border-radius: 12px; padding: 8px; display: flex; align-items: center; justify-content: center; }
+        .color-box { border: 1.5px solid var(--border); border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .color-box input { width: 30px; height: 30px; border: none; cursor: pointer; background: none; }
+
+        /* الأيقونات السريعة */
+        .icon-bar { display: flex; gap: 8px; margin-top: 10px; }
+        .icon-chip { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 11px; text-align: center; font-weight: 700; background: #fff; }
+        .icon-chip:hover { border-color: var(--brand); color: var(--brand); }
 
         /* Viewer */
-        .viewer { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; background: #f1f5f9; }
+        .viewer { flex: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; position: relative; }
         
-        /* محاكي الواقع */
-        .viewer.dark-mode { background: #1e293b; }
-
         #display-frame {
-            background: white; padding: 50px; border-radius: 40px;
+            background: white; padding: 60px; border-radius: 50px;
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.08); width: 480px;
+            box-shadow: 0 50px 100px rgba(15, 23, 42, 0.08); width: 500px;
+            position: relative;
         }
 
-        .qr-text-output { margin-top: 25px; font-size: 30px; font-weight: 900; color: var(--dark); text-align: center; }
+        .qr-text-output { margin-top: 30px; font-size: 34px; font-weight: 900; color: var(--dark); text-align: center; letter-spacing: -1px; }
 
-        /* تنبيه الجودة */
-        #quality-alert { font-size: 12px; font-weight: 700; margin-top: 10px; display: none; color: #f59e0b; text-align: center; }
-
-        .btn-main { background: var(--brand); color: white; border: none; padding: 16px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-top: 20px; font-size: 16px; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
-        .btn-main:hover { transform: translateY(-3px); }
+        .btn-main { background: var(--brand); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 900; cursor: pointer; margin-top: 25px; font-size: 18px; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3); }
 
         #capture-buffer { position: absolute; left: -9999px; }
     </style>
@@ -71,42 +71,44 @@
 <body>
 
     <aside class="sidebar">
-        <div class="logo-area">
+        <div class="logo-box">
             <div class="logo">Qrestige</div>
-            <span class="version">V2.0 INTELLIGENCE</span>
+            <div style="font-size: 11px; font-weight: 700; color: #64748b;">ذكاء اصطناعي في التصميم</div>
         </div>
         
-        <div class="section-label">1. البيانات والذكاء</div>
-        <input type="text" id="in-data" placeholder="ضع الرابط هنا..." oninput="update()">
-        <div id="quality-alert">⚠️ الرابط طويل جداً، قد يصعب مسحه!</div>
+        <div class="section-label">البيانات <span>(AI Scan Guard)</span></div>
+        <input type="text" id="in-data" placeholder="https://..." oninput="smartUpdate()">
+        <div id="data-alert" class="smart-alert">⚠️ البيانات كثيرة جداً! الكود قد يصبح صعب المسح.</div>
 
-        <div class="section-label">2. النص الإبداعي</div>
-        <input type="text" id="in-text" placeholder="اكتب النص هنا..." oninput="update()">
+        <div class="section-label">النص الإبداعي <span>(Tajawal)</span></div>
+        <input type="text" id="in-text" placeholder="مثال: اطلب الآن" oninput="smartUpdate()">
 
-        <div class="section-label">3. لوحة الألوان السحرية</div>
+        <div class="section-label">لوحة الألوان <span>(Contrast Check)</span></div>
         <div class="color-row">
-            <div class="color-box"><input type="color" id="c1" value="#4f46e5" oninput="update()"></div>
-            <div class="color-box"><input type="color" id="c2" value="#9333ea" oninput="update()"></div>
+            <div class="color-box"><input type="color" id="c1" value="#4f46e5" oninput="smartUpdate()"></div>
+            <div class="color-box"><input type="color" id="c2" value="#9333ea" oninput="smartUpdate()"></div>
         </div>
-        <div class="smart-tools">
-            <button class="tool-btn" onclick="randomColors()">✨ ألوان عشوائية</button>
-            <button class="tool-btn" onclick="toggleTheme()">🌓 محاكي الإضاءة</button>
+        <div id="color-alert" class="smart-alert">⚠️ الألوان فاتحة جداً! قد لا يظهر الكود بوضوح.</div>
+
+        <div class="section-label">إضافة شعار ذكي</div>
+        <div class="icon-bar">
+            <div class="icon-chip" onclick="setLogo('fb')">Facebook</div>
+            <div class="icon-chip" onclick="setLogo('inst')">Instagram</div>
+            <div class="icon-chip" onclick="setLogo('web')">Website</div>
         </div>
+        <input type="file" id="logo-in" accept="image/*" onchange="smartUpdate()" style="margin-top: 10px; font-size: 12px;">
 
-        <div class="section-label">4. الهوية (Logo)</div>
-        <input type="file" id="logo-in" accept="image/*" onchange="update()">
-
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 25px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 700;">
-                <input type="checkbox" id="check-trans" onchange="update()"> تفعيل الشفافية
+                <input type="checkbox" id="check-trans" onchange="smartUpdate()"> وضع الشفافية للمصممين
             </label>
         </div>
 
-        <button class="btn-main" onclick="downloadHD()">حفظ التصميم PNG HD</button>
-        <button class="tool-btn" style="margin-top: 10px;" onclick="qr.download({extension:'svg'})">تحميل الكود كملف SVG</button>
+        <button class="btn-main" onclick="downloadUltimatePNG()">حفظ كصورة HD</button>
+        <button class="icon-chip" style="margin-top: 10px; width: 100%;" onclick="qr.download({extension:'svg'})">تحميل ملف SVG</button>
     </aside>
 
-    <main class="viewer" id="main-viewer">
+    <main class="viewer">
         <div id="display-frame">
             <div id="qr-target"></div>
             <div id="text-target" class="qr-text-output">امسح الكود</div>
@@ -117,29 +119,43 @@
 
 <script>
     const qr = new QRCodeStyling({
-        width: 340, height: 340,
+        width: 360, height: 360,
         dotsOptions: { type: "extra-rounded" },
         backgroundOptions: { color: "#ffffff" },
-        imageOptions: { crossOrigin: "anonymous", margin: 8, imageSize: 0.4 }
+        imageOptions: { crossOrigin: "anonymous", margin: 10, imageSize: 0.4 }
     });
 
     qr.append(document.getElementById("qr-target"));
 
-    function update() {
+    // وظيفة التحديث الذكية
+    function smartUpdate() {
         const d = document.getElementById('in-data').value || "https://google.com";
         const t = document.getElementById('in-text').value || "امسح الكود";
         const c1 = document.getElementById('c1').value;
         const c2 = document.getElementById('c2').value;
         const trans = document.getElementById('check-trans').checked;
-        const logo = document.getElementById('logo-in').files[0];
+        const logoFile = document.getElementById('logo-in').files[0];
 
-        // ذكاء: فحص طول البيانات
-        document.getElementById('quality-alert').style.display = d.length > 100 ? 'block' : 'none';
+        // 1. فحص طول البيانات
+        document.getElementById('data-alert').style.display = d.length > 120 ? 'block' : 'none';
 
-        document.getElementById('text-target').innerText = t;
-        document.getElementById('text-target').style.color = trans ? c1 : "#0f172a";
-        document.getElementById('display-frame').style.background = trans ? "transparent" : "white";
-        document.getElementById('display-frame').style.border = trans ? "3px dashed " + c1 : "none";
+        // 2. فحص التباين (Contrast Check) - ذكاء بسيط
+        const isLight = (color) => {
+            const r = parseInt(color.slice(1,3), 16);
+            const g = parseInt(color.slice(3,5), 16);
+            const b = parseInt(color.slice(5,7), 16);
+            return (r*0.299 + g*0.587 + b*0.114) > 180;
+        };
+        document.getElementById('color-alert').style.display = isLight(c1) ? 'block' : 'none';
+
+        // 3. تحديث الواجهة
+        const txt = document.getElementById('text-target');
+        const frame = document.getElementById('display-frame');
+        
+        txt.innerText = t;
+        txt.style.color = trans ? c1 : "#0f172a";
+        frame.style.background = trans ? "transparent" : "#ffffff";
+        frame.style.border = trans ? `4px dashed ${c1}` : "none";
 
         qr.update({
             data: d,
@@ -148,50 +164,58 @@
             cornersSquareOptions: { color: c1 }
         });
 
-        if (logo) {
+        if (logoFile) {
             const reader = new FileReader();
             reader.onload = (e) => qr.update({ image: e.target.result });
-            reader.readAsDataURL(logo);
+            reader.readAsDataURL(logoFile);
         }
+
+        // حفظ الجلسة تلقائياً
+        localStorage.setItem('qrestige_data', JSON.stringify({d, t, c1, c2}));
     }
 
-    // ذكاء: توليد ألوان متناسقة عشوائياً
-    function randomColors() {
-        const colors = [
-            ['#ff00cc', '#333399'], ['#00b4db', '#0083b0'], 
-            ['#f2994a', '#f2c94c'], ['#8e2de2', '#4a00e0'],
-            ['#ee0979', '#ff6a00'], ['#11998e', '#38ef7d']
-        ];
-        const picked = colors[Math.floor(Math.random() * colors.length)];
-        document.getElementById('c1').value = picked[0];
-        document.getElementById('c2').value = picked[1];
-        update();
+    // شعارات جاهزة
+    function setLogo(type) {
+        const logos = {
+            'fb': 'https://cdn-icons-png.flaticon.com/512/124/124010.png',
+            'inst': 'https://cdn-icons-png.flaticon.com/512/174/174855.png',
+            'web': 'https://cdn-icons-png.flaticon.com/512/1006/1006771.png'
+        };
+        qr.update({ image: logos[type] });
     }
 
-    // ذكاء: محاكاة البيئة
-    function toggleTheme() {
-        document.getElementById('main-viewer').classList.toggle('dark-mode');
-    }
-
-    async function downloadHD() {
+    // التحميل النهائي بدقة 4K
+    async function downloadUltimatePNG() {
         const original = document.getElementById('display-frame');
         const buffer = document.getElementById('capture-buffer');
         buffer.innerHTML = "";
         const clone = original.cloneNode(true);
-        clone.style.width = "500px";
+        clone.style.width = "600px"; 
+        clone.style.transform = "none";
         buffer.appendChild(clone);
 
         setTimeout(async () => {
-            const canvas = await html2canvas(clone, { scale: 3, backgroundColor: null });
+            const canvas = await html2canvas(clone, { scale: 4, backgroundColor: null, useCORS: true });
             const link = document.createElement('a');
-            link.download = `Qrestige_Smart_QR.png`;
+            link.download = `Qrestige_Pro_Design.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             buffer.innerHTML = "";
-        }, 150);
+        }, 200);
     }
 
-    update();
+    // استعادة الجلسة عند الفتح
+    window.onload = () => {
+        const saved = localStorage.getItem('qrestige_data');
+        if(saved) {
+            const {d, t, c1, c2} = JSON.parse(saved);
+            document.getElementById('in-data').value = d;
+            document.getElementById('in-text').value = t;
+            document.getElementById('c1').value = c1;
+            document.getElementById('c2').value = c2;
+        }
+        smartUpdate();
+    };
 </script>
 </body>
 </html>
