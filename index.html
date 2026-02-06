@@ -3,113 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Generator Pro | نسخة التحميل المضمونة</title>
+    <title>QR Designer Pro | مصمم الأكواد الاحترافي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
-        .main-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
-        @media (max-width: 768px) { .main-container { grid-template-columns: 1fr; } }
-        .card { background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        h2 { margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
-        input[type="text"], select, input[type="file"] { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .preview-box { position: sticky; top: 20px; text-align: center; }
-        #canvas-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); margin-bottom: 20px; display: inline-block; }
-        .btn-download { background: #10b981; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; }
-        .btn-download:hover { background: #059669; }
-        .color-input { width: 100%; height: 45px; border: 1px solid #ddd; cursor: pointer; border-radius: 8px; }
+        :root {
+            --primary: #2563eb;
+            --accent: #7c3aed;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .preview-box { position: relative !important; top: 0 !important; }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        h1 { font-weight: 800; font-size: 1.8rem; margin-bottom: 30px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        h2 { font-size: 1.1rem; margin: 25px 0 15px; display: flex; align-items: center; gap: 8px; border-right: 4px solid var(--primary); padding-right: 10px; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; }
+
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'Tajawal';
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .color-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 45px;
+            border: none;
+            cursor: pointer;
+            background: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .preview-box {
+            position: sticky;
+            top: 40px;
+            text-align: center;
+        }
+
+        #canvas-container {
+            background: white;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: inline-block;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .download-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Tajawal';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-main { background: var(--primary); color: white; width: 100%; font-size: 1.1rem; margin-bottom: 10px; }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 15px rgba(37, 99, 235, 0.3); }
+
+        .btn-outline { background: white; border: 2px solid #e2e8f0; color: #64748b; font-size: 0.9rem; }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+        .format-group { display: flex; gap: 10px; }
+        .format-group .btn { flex: 1; }
     </style>
 </head>
 <body>
 
-<div class="main-container">
+<div class="container">
     <div class="card">
-        <h2>1. المحتوى والشعار</h2>
+        <h1>💎 QR Designer Pro</h1>
+        
+        <h2>1. المحتوى الأساسي</h2>
         <div class="form-group">
             <label>الرابط أو النص</label>
             <input type="text" id="qr-data" placeholder="https://عيادة-الدكتور.com" oninput="updateQR()">
         </div>
+
         <div class="form-group">
-            <label>ارفع شعار العيادة (اختياري)</label>
+            <label>شعار العيادة (لوغو)</label>
             <input type="file" id="qr-image" accept="image/*" onchange="updateQR()">
         </div>
 
         <h2>2. الألوان والتصميم</h2>
         <div class="options-grid">
-            <div class="form-group">
+            <div class="color-card">
                 <label>لون الكود</label>
-                <input type="color" id="dots-color" class="color-input" value="#2563eb" onchange="updateQR()">
+                <input type="color" id="dots-color" value="#2563eb" oninput="updateQR()">
             </div>
-            <div class="form-group">
-                <label>لون الخلفية</label>
-                <input type="color" id="bg-color" class="color-input" value="#ffffff" onchange="updateQR()">
+            <div class="color-card">
+                <label id="bg-label">لون الخلفية</label>
+                <input type="color" id="bg-color" value="#ffffff" oninput="updateQR()">
             </div>
         </div>
 
-        <div class="form-group">
-            <label>ستايل النقاط</label>
-            <select id="dots-type" onchange="updateQR()">
-                <option value="rounded">دوائر ناعمة</option>
-                <option value="dots">نقاط دائرية</option>
-                <option value="square">مربعات تقليدية</option>
-                <option value="extra-rounded">انحناء كامل</option>
-            </select>
+        <div class="checkbox-group">
+            <input type="checkbox" id="transparent-bg" onchange="toggleTransparent()">
+            <label style="margin:0" for="transparent-bg">تفعيل خلفية شفافة (Transparent)</label>
+        </div>
+
+        <h2>3. نمط الزوايا والنقاط</h2>
+        <div class="options-grid">
+            <div class="form-group">
+                <label>شكل النقاط</label>
+                <select id="dots-type" onchange="updateQR()">
+                    <option value="rounded">دوائر ناعمة</option>
+                    <option value="dots">نقاط</option>
+                    <option value="extra-rounded">دائري جداً</option>
+                    <option value="square">مربعات</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>شكل المربعات</label>
+                <select id="corners-type" onchange="updateQR()">
+                    <option value="extra-rounded">منحني</option>
+                    <option value="dot">دائري</option>
+                    <option value="square">مربع</option>
+                </select>
+            </div>
         </div>
     </div>
 
     <div class="preview-box">
         <div id="canvas-container"></div>
-        <button class="btn-download" onclick="downloadQR()">تحميل كصورة PNG جاهزة</button>
-        <p style="color: #64748b; font-size: 0.8rem; margin-top: 10px;">الصورة ستُحفظ بجودة عالية قابلة للطباعة</p>
+        
+        <div class="download-actions">
+            <button class="btn btn-main" onclick="download('png')">تحميل PNG (للمواقع)</button>
+            <div class="format-group">
+                <button class="btn btn-outline" onclick="download('svg')">SVG (للمطابع)</button>
+                <button class="btn btn-outline" onclick="download('pdf')">PDF (للطباعة)</button>
+            </div>
+        </div>
+        <p style="margin-top:20px; color: #94a3b8; font-size: 0.85rem;">كل الصيغ تدعم الجودة العالية للطباعة 300dpi</p>
     </div>
 </div>
 
 <script>
+    let isTransparent = false;
+
     const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
-        type: "canvas", // نستخدم Canvas لضمان إمكانية التحميل
+        type: "canvas",
         data: "https://google.com",
         dotsOptions: { color: "#2563eb", type: "rounded" },
         backgroundOptions: { color: "#ffffff" },
+        cornersSquareOptions: { type: "extra-rounded", color: "#2563eb" },
         imageOptions: { crossOrigin: "anonymous", margin: 5 }
     });
 
     qrCode.append(document.getElementById("canvas-container"));
 
+    function toggleTransparent() {
+        isTransparent = document.getElementById("transparent-bg").checked;
+        const bgInput = document.getElementById("bg-color");
+        bgInput.disabled = isTransparent;
+        bgInput.parentElement.style.opacity = isTransparent ? "0.5" : "1";
+        updateQR();
+    }
+
     function updateQR() {
         const data = document.getElementById("qr-data").value || " ";
         const dotsColor = document.getElementById("dots-color").value;
-        const bgColor = document.getElementById("bg-color").value;
+        const bgColor = isTransparent ? "transparent" : document.getElementById("bg-color").value;
         const dotsType = document.getElementById("dots-type").value;
+        const cornersType = document.getElementById("corners-type").value;
         const fileInput = document.getElementById("qr-image");
         
-        let updateOptions = {
+        let options = {
             data: data,
             dotsOptions: { color: dotsColor, type: dotsType },
-            backgroundOptions: { color: bgColor }
+            backgroundOptions: { color: bgColor },
+            cornersSquareOptions: { type: cornersType, color: dotsColor },
+            cornersDotOptions: { color: dotsColor }
         };
 
-        // معالجة صورة الشعار إذا تم رفعها
         if (fileInput.files && fileInput.files[0]) {
             const reader = new FileReader();
-            reader.onload = function (e) {
-                qrCode.update({
-                    image: e.target.result
-                });
+            reader.onload = (e) => {
+                qrCode.update({ ...options, image: e.target.result });
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else {
-            qrCode.update(updateOptions);
+            qrCode.update(options);
         }
     }
 
-    function downloadQR() {
-        // التحميل المباشر باستخدام ميزة المكتبة المدمجة
-        qrCode.download({ name: "Doctor-QR-Code", extension: "png" });
+    function download(format) {
+        qrCode.download({ name: "Doctor-QR-Pro", extension: format });
     }
 </script>
 
