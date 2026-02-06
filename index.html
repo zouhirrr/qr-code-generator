@@ -3,208 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qrestige Transcendence | فن الأكواد الذكية</title>
+    <title>Qrestige | الاحترافية المطلقة</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root {
-            --brand: #8a2be2; /* لون بنفسجي جذاب */
-            --brand-accent: #00bcd4; /* أزرق سماوي للتوهج */
-            --dark: #0f172a;
-            --bg-light: #f0f2f5;
-            --bg-dark: #1a1a2e; /* خلفية داكنة لتأثير النيون */
+            --brand: #0f172a;
+            --accent: #6366f1;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
         }
 
-        /* خط أساسي وتأثيرات انتقال ناعمة */
-        * { box-sizing: border-box; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); font-family: 'Tajawal', sans-serif !important; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif !important; }
         
         body { 
-            background: var(--bg-light); color: var(--dark); margin: 0; display: flex; height: 100vh; overflow: hidden;
-            background-image: radial-gradient(circle at top left, rgba(138, 43, 226, 0.1), transparent 50%),
-                              radial-gradient(circle at bottom right, rgba(0, 188, 212, 0.1), transparent 50%);
+            background: var(--bg); color: var(--brand); margin: 0; 
+            display: flex; height: 100vh; overflow: hidden; 
         }
 
-        /* Sidebar - لوحة التحكم الشفافة */
+        /* القائمة الجانبية */
         .sidebar {
-            width: 450px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); /* تأثير ضبابي */
-            border-left: 1px solid rgba(255, 255, 255, 0.3); padding: 30px; 
-            display: flex; flex-direction: column; overflow-y: auto; z-index: 100;
-            box-shadow: 20px 0 60px rgba(0,0,0,0.08);
+            width: 380px; background: white; border-left: 1px solid var(--border);
+            padding: 35px; display: flex; flex-direction: column; overflow-y: auto;
+            z-index: 10; box-shadow: 4px 0 20px rgba(0,0,0,0.02);
         }
 
-        .header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.05); }
-        .logo { font-weight: 900; font-size: 45px; color: var(--brand); letter-spacing: -2.5px; line-height: 1; text-shadow: 0 0 15px rgba(138, 43, 226, 0.5); }
-        .version-tag { font-size: 11px; background: var(--brand-accent); color: white; padding: 4px 12px; border-radius: 20px; vertical-align: middle; margin-right: 10px; font-weight: 700; }
+        .logo-container { text-align: center; margin-bottom: 40px; }
+        .logo { font-weight: 900; font-size: 38px; color: var(--brand); letter-spacing: -1.5px; }
 
-        .section-label { font-size: 13px; font-weight: 800; color: #64748b; text-transform: uppercase; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.08); }
-
-        input:not([type="color"]):not([type="checkbox"]), select {
-            width: 100%; padding: 16px; border-radius: 18px; border: 2px solid rgba(0,0,0,0.1); 
-            font-size: 16px; outline: none; background: rgba(255,255,255,0.7); color: var(--dark);
+        .section-label { 
+            font-size: 11px; font-weight: 800; color: #94a3b8; 
+            text-transform: uppercase; margin: 25px 0 10px; letter-spacing: 0.5px;
         }
-        input:focus { border-color: var(--brand); box-shadow: 0 0 0 5px rgba(138, 43, 226, 0.1); }
 
-        /* الألوان وتأثيرات النيون */
-        .color-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .color-input-wrapper { display: flex; align-items: center; justify-content: center; border: 2px solid rgba(0,0,0,0.1); border-radius: 18px; padding: 10px; }
-        input[type="color"] { width: 40px; height: 40px; border: none; cursor: pointer; background: none; }
-
-        /* أنماط التوهج الجديدة */
-        .glow-styles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .glow-btn { 
-            padding: 12px; border-radius: 15px; border: 2px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); 
-            text-align: center; font-size: 13px; font-weight: 700; cursor: pointer;
+        input[type="text"] {
+            width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border);
+            font-size: 15px; outline: none; background: #fcfdfe;
         }
-        .glow-btn:hover { border-color: var(--brand-accent); box-shadow: 0 0 15px rgba(0, 188, 212, 0.3); }
+        input:focus { border-color: var(--accent); }
 
-        /* منطقة العرض */
-        .viewer { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; padding: 40px; }
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .color-item { 
+            border: 1.5px solid var(--border); border-radius: 12px; padding: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        input[type="color"] { width: 30px; height: 30px; border: none; cursor: pointer; background: none; }
+
+        /* منطقة المعاينة */
+        .preview-area { 
+            flex: 1; display: flex; align-items: center; justify-content: center; 
+            background: #f1f5f9; padding: 40px; 
+        }
         
-        #canvas-stage {
-            background: white; padding: 70px; border-radius: 70px;
+        #render-box {
+            background: white; padding: 60px; border-radius: 40px;
             display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 80px 160px rgba(15, 23, 42, 0.15); width: 600px;
-            position: relative; border: 2px solid rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px); /* Glassmorphism effect */
-            background-size: cover; background-position: center; /* لخلفيات الديناميكية */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.04);
+            width: 500px; transition: 0.3s;
         }
 
-        /* تأثيرات التوهج على الكود نفسه */
-        #qr-wrap.glow { filter: drop-shadow(0 0 10px var(--brand-accent)) drop-shadow(0 0 20px var(--brand)); }
+        #render-box.transparent { background: none !important; box-shadow: none; border: 2px dashed var(--accent); }
 
-        .qr-label-output { 
-            margin-top: 35px; font-size: 40px; font-weight: 900; 
-            color: var(--dark); text-align: center; width: 100%;
-            word-wrap: break-word; line-height: 1.1; text-shadow: 0 0 5px rgba(0,0,0,0.1);
+        .text-preview {
+            margin-top: 30px; font-size: 32px; font-weight: 900;
+            color: var(--brand); text-align: center; width: 100%;
         }
 
-        /* أزرار الإجراءات */
-        .actions { margin-top: auto; display: flex; flex-direction: column; gap: 15px; }
-        .btn-main { 
-            background: linear-gradient(135deg, var(--brand), var(--brand-accent)); 
-            color: white; border: none; padding: 22px; border-radius: 20px; 
-            font-weight: 900; font-size: 20px; cursor: pointer; 
-            box-shadow: 0 12px 30px rgba(138, 43, 226, 0.4); text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        /* الأزرار */
+        .btn-download {
+            background: var(--brand); color: white; border: none; padding: 18px;
+            border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer;
+            margin-top: auto;
         }
-        .btn-main:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(138, 43, 226, 0.5); }
+        .btn-download:hover { background: #1e293b; transform: translateY(-2px); }
 
-        .btn-secondary {
-            background: rgba(0,0,0,0.05); color: var(--dark); border: 1px solid rgba(0,0,0,0.1); 
-            padding: 15px; border-radius: 15px; font-weight: 700; font-size: 16px; cursor: pointer;
+        .btn-svg {
+            background: white; color: var(--brand); border: 1.5px solid var(--border);
+            padding: 12px; border-radius: 12px; font-weight: 600; margin-top: 10px; cursor: pointer;
         }
 
-        .voice-btn { background: #ff4500; color: white; padding: 12px; border-radius: 12px; margin-top: 10px; font-weight: 700; cursor: pointer; }
-
-        #capture-buffer { position: absolute; left: -9999px; }
-
-        /* أنماط الخلفيات الديناميكية */
-        .bg-gradient { background-image: linear-gradient(to right top, #a21a5a, #4e1952, #18143d, #001228, #000000); }
-        .bg-nebula { background-image: url('https://images.unsplash.com/photo-1518384213329-87c2cfc9d64a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
-        .bg-dots { background-image: radial-gradient(#d3d3d3 1px, transparent 1px), radial-gradient(#d3d3d3 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0, 10px 10px; }
-
+        #buffer-zone { position: absolute; left: -9999px; }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="header">
-            <div class="logo">Qrestige <span class="version-tag">TRANSCENDENCE</span></div>
-            <div style="font-size: 13px; color: #787878; margin-top: 5px;">فن الكود، برؤية ذكاء اصطناعي</div>
+        <div class="logo-container">
+            <div class="logo">Qrestige</div>
         </div>
         
-        <div class="section-label">1. المحتوى الأساسي</div>
-        <input type="text" id="qr-data" placeholder="الرابط، النص، الرقم..." oninput="updateQR()">
-        <input type="text" id="qr-text-label" placeholder="النص تحت الكود (امسحني)" oninput="updateQR()" style="margin-top: 10px;">
+        <div class="section-label">البيانات</div>
+        <input type="text" id="data" placeholder="الرابط أو النص هنا..." oninput="refresh()">
 
-        <div class="section-label">2. لوحة الألوان المضيئة</div>
-        <div class="color-group">
-            <div class="color-input-wrapper"><input type="color" id="c1" value="#8a2be2" oninput="updateQR()"><span>البدء</span></div>
-            <div class="color-input-wrapper"><input type="color" id="c2" value="#00bcd4" oninput="updateQR()"><span>الانتهاء</span></div>
+        <div class="section-label">النص السفلي</div>
+        <input type="text" id="label" placeholder="مثلاً: امسحني" oninput="refresh()">
+
+        <div class="section-label">ألوان الكود</div>
+        <div class="color-grid">
+            <div class="color-item"><label>البدء</label><input type="color" id="c1" value="#0f172a" oninput="refresh()"></div>
+            <div class="color-item"><label>الانتهاء</label><input type="color" id="c2" value="#334155" oninput="refresh()"></div>
         </div>
-        <button class="glow-btn" onclick="magicPalette()">✨ اقتراح لوحة ألوان متوهجة</button>
 
-        <div class="section-label">3. الهوية البصرية المتقدمة</div>
-        <div class="glow-styles-grid">
-            <button class="glow-btn" onclick="setGlowEffect(true, 'dots', 'extra-rounded')">✨ تأثير توهج نيون</button>
-            <button class="glow-btn" onclick="setGlowEffect(false, 'square', 'dots')">🧊 نمط زجاجي هادئ</button>
-            <button class="glow-btn" onclick="setGlowEffect(false, 'extra-rounded', 'square')">🌟 نمط فريد</button>
+        <div class="section-label">الشعار (Logo)</div>
+        <input type="file" id="logo" accept="image/*" onchange="refresh()">
+
+        <div style="margin-top: 25px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                <input type="checkbox" id="trans" onchange="refresh()"> خلفية شفافة
+            </label>
         </div>
-        
-        <div class="section-label">4. الخلفيات الديناميكية</div>
-        <select id="bg-texture" onchange="updateQR()" style="margin-bottom: 15px;">
-            <option value="none">خلفية بيضاء (افتراضي)</option>
-            <option value="gradient">تدرج لوني مجرة</option>
-            <option value="nebula">سديم كوني</option>
-            <option value="dots">نقاط شبكية</option>
-        </select>
 
-        <div class="section-label">5. الشعار والشفافية</div>
-        <input type="file" id="qr-logo" accept="image/*" onchange="updateQR()" style="margin-bottom: 15px;">
-        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; font-weight: 700;">
-            <input type="checkbox" id="is-trans" onchange="updateQR()"> خلفية الكود شفافة
-        </label>
-
-        <div class="actions">
-            <button class="btn-main" onclick="exportUltimatePNG()">🚀 حفظ التصميم (PNG Ultra HD)</button>
-            <button class="btn-secondary" onclick="qr.download({extension:'svg'})">تحميل الكود الأصلي SVG</button>
-            <button class="voice-btn" style="width: 100%;" disabled>🎙️ مرشد صوتي (قريباً)</button>
-        </div>
+        <button class="btn-download" onclick="savePNG()">تحميل التصميم كاملاً PNG</button>
+        <button class="btn-svg" onclick="qr.download({extension:'svg'})">تحميل الكود فقط SVG</button>
     </aside>
 
-    <main class="viewer">
-        <div id="canvas-stage">
-            <div id="qr-wrap"></div>
-            <div id="label-wrap" class="qr-label-output">امسح الكود لتجربة سحر Qrestige</div>
+    <main class="preview-area">
+        <div id="render-box">
+            <div id="qr-space"></div>
+            <div id="text-space" class="text-preview">امسح الكود</div>
         </div>
     </main>
 
-    <div id="capture-buffer"></div>
+    <div id="buffer-zone"></div>
 
 <script>
     const qr = new QRCodeStyling({
-        width: 380, height: 380,
+        width: 360, height: 360,
         dotsOptions: { type: "extra-rounded" },
-        cornersSquareOptions: { type: "extra-rounded" }, // تخصيص منفصل للعيون
         backgroundOptions: { color: "#ffffff" },
-        imageOptions: { crossOrigin: "anonymous", margin: 10, imageSize: 0.4 }
+        imageOptions: { crossOrigin: "anonymous", margin: 8, imageSize: 0.4 }
     });
 
-    qr.append(document.getElementById("qr-wrap"));
+    qr.append(document.getElementById("qr-space"));
 
-    function updateQR() {
-        const data = document.getElementById('qr-data').value || "https://qrestige.com/magic";
-        const labelText = document.getElementById('qr-text-label').value || "امسح الكود لتجربة سحر Qrestige";
-        const c1 = document.getElementById('c1').value;
-        const c2 = document.getElementById('c2').value;
-        const isTransparent = document.getElementById('is-trans').checked;
-        const logoFile = document.getElementById('qr-logo').files[0];
-        const bgTexture = document.getElementById('bg-texture').value;
+    function refresh() {
+        const d = document.getElementById('data').value || "https://google.com";
+        const t = document.getElementById('label').value || "امسح الكود";
+        const color1 = document.getElementById('c1').value;
+        const color2 = document.getElementById('c2').value;
+        const isTrans = document.getElementById('trans').checked;
+        const logoFile = document.getElementById('logo').files[0];
 
-        const labelElement = document.getElementById('label-wrap');
-        const stageElement = document.getElementById('canvas-stage');
-        const qrWrapElement = document.getElementById('qr-wrap');
+        const box = document.getElementById('render-box');
+        const txt = document.getElementById('text-space');
 
-        labelElement.innerText = labelText;
-        labelElement.style.color = c1; // النص يأخذ لون الكود الأساسي
-
-        // تطبيق الخلفيات الديناميكية
-        stageElement.className = ''; // إعادة تعيين
-        if (bgTexture === 'gradient') stageElement.classList.add('bg-gradient');
-        else if (bgTexture === 'nebula') stageElement.classList.add('bg-nebula');
-        else if (bgTexture === 'dots') stageElement.classList.add('bg-dots');
-        else stageElement.style.backgroundImage = 'none'; // مسح إذا لا يوجد اختيار
-
-        stageElement.style.background = isTransparent ? 'transparent' : 'white'; // الخلفية الفعلية لإطار الكود
+        txt.innerText = t;
+        if(isTrans) {
+            box.classList.add('transparent');
+            txt.style.color = color1;
+        } else {
+            box.classList.remove('transparent');
+            txt.style.color = "#0f172a";
+        }
 
         qr.update({
-            data: data,
-            dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
-            cornersSquareOptions: { color: c1 }, // عيون الكود بنفس اللون الأساسي
-            backgroundOptions: { color: isTransparent ? "transparent" : "#ffffff" }
+            data: d,
+            dotsOptions: { 
+                gradient: { type: "linear", colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] }
+            },
+            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
+            cornersSquareOptions: { color: color1 }
         });
 
         if (logoFile) {
@@ -212,82 +173,28 @@
             reader.onload = (e) => qr.update({ image: e.target.result });
             reader.readAsDataURL(logoFile);
         }
-
-        // حفظ الجلسة
-        localStorage.setItem('qrestige_session', JSON.stringify({ data, labelText, c1, c2, isTransparent, bgTexture }));
     }
 
-    // AI-Driven Visualizer: أنماط التوهج والزجاج
-    function setGlowEffect(applyGlow, dotType, cornersType) {
-        const qrWrapElement = document.getElementById('qr-wrap');
-        if (applyGlow) {
-            qrWrapElement.classList.add('glow');
-            document.documentElement.style.setProperty('--brand-accent', document.getElementById('c2').value); // لون التوهج من اللون الثانوي
-            document.documentElement.style.setProperty('--brand', document.getElementById('c1').value); // لون التوهج الرئيسي
-        } else {
-            qrWrapElement.classList.remove('glow');
-        }
-
-        qr.update({
-            dotsOptions: { type: dotType },
-            cornersSquareOptions: { type: cornersType }
-        });
-        updateQR(); // تحديث شامل
-    }
-
-    // AI-Driven Visualizer: اقتراح لوحة ألوان متوهجة
-    function magicPalette() {
-        const palettes = [
-            ['#ee0979', '#ff6a00'], // Fire Sunset
-            ['#00c6ff', '#0072ff'], // Deep Ocean
-            ['#d400d4', '#ff007f'], // Cyber Punk
-            ['#00f260', '#0575e6'], // Forest Stream
-            ['#ff7e5f', '#feb47b']  // Vibrant Coral
-        ];
-        const pick = palettes[Math.floor(Math.random() * palettes.length)];
-        document.getElementById('c1').value = pick[0];
-        document.getElementById('c2').value = pick[1];
-        updateQR();
-    }
-
-    // تصدير فائق الدقة
-    async function exportUltimatePNG() {
-        const original = document.getElementById('canvas-stage');
-        const buffer = document.getElementById('capture-buffer');
+    async function savePNG() {
+        const original = document.getElementById('render-box');
+        const buffer = document.getElementById('buffer-zone');
         buffer.innerHTML = "";
         const clone = original.cloneNode(true);
-        
-        // إعداد خاص للكلون لضمان أفضل جودة
-        clone.style.width = "800px"; 
+        clone.style.width = "600px"; 
         clone.style.transform = "none";
-        clone.style.borderRadius = "80px"; // زيادة حدة الحواف
-        clone.style.padding = "80px";
         buffer.appendChild(clone);
 
         setTimeout(async () => {
-            const canvas = await html2canvas(clone, { scale: 5, backgroundColor: null, useCORS: true, logging: false }); // دقة 5x لـ 4K+
+            const canvas = await html2canvas(clone, { scale: 3, backgroundColor: null });
             const link = document.createElement('a');
-            link.download = `Qrestige_Transcendence_${Date.now()}.png`;
+            link.download = `Qrestige_Official.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
             buffer.innerHTML = "";
-        }, 300); // زيادة الوقت قليلا لضمان رندر كامل للتأثيرات
+        }, 150);
     }
 
-    // استعادة الجلسة
-    window.onload = () => {
-        const saved = localStorage.getItem('qrestige_session');
-        if (saved) {
-            const { data, labelText, c1, c2, isTransparent, bgTexture } = JSON.parse(saved);
-            document.getElementById('qr-data').value = data;
-            document.getElementById('qr-text-label').value = labelText;
-            document.getElementById('c1').value = c1;
-            document.getElementById('c2').value = c2;
-            document.getElementById('is-trans').checked = isTransparent;
-            document.getElementById('bg-texture').value = bgTexture;
-        }
-        updateQR();
-    };
+    refresh();
 </script>
 </body>
 </html>
