@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>مولّد رمز QR احترافي</title>
 
-  <!-- Tajawal Font -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
-
-  <!-- QR Library -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-
-  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -43,33 +38,33 @@
 
 <div class="container">
   <h1>مولّد رمز QR الذكي</h1>
-  <p class="subtitle">خيارات احترافية: خلفية شفافة، تدرّج لوني، وحفظ PDF</p>
+  <p class="subtitle">معاينة لحظية + تدرّج لوني + خلفية شفافة</p>
 
   <div class="grid">
     <div>
       <label>النص أو الرابط</label>
-      <input id="text" placeholder="https://example.com" />
+      <input id="text" placeholder="https://example.com" oninput="liveUpdate()" />
 
       <label>الحجم</label>
-      <select id="size">
+      <select id="size" onchange="liveUpdate()">
         <option value="200">متوسط</option>
         <option value="300">كبير</option>
         <option value="400">كبير جدًا</option>
       </select>
 
       <label>لون البداية (تدرّج)</label>
-      <input type="color" id="color1" value="#000000" />
+      <input type="color" id="color1" value="#000000" oninput="liveUpdate()" />
 
       <label>لون النهاية (تدرّج)</label>
-      <input type="color" id="color2" value="#4f46e5" />
+      <input type="color" id="color2" value="#4f46e5" oninput="liveUpdate()" />
 
       <label>الخلفية</label>
-      <select id="bgMode">
+      <select id="bgMode" onchange="liveUpdate()">
         <option value="white">بيضاء</option>
         <option value="transparent">شفافة</option>
       </select>
 
-      <button class="primary" onclick="generateQR()">إنشاء QR</button>
+      <button class="primary" onclick="generateQR()">إعادة التوليد</button>
     </div>
 
     <div class="qr-box">
@@ -81,34 +76,60 @@
 </div>
 
 <script>
-let qr;
+let baseQRCanvas = null;
 
 function generateQR(){
   const text = document.getElementById('text').value.trim();
-  if(!text){ alert('أدخل نصًا أو رابطًا'); return; }
+  if(!text){ return; }
 
   const size = parseInt(document.getElementById('size').value);
   const bgMode = document.getElementById('bgMode').value;
 
   const temp = document.createElement('div');
-  qr = new QRCode(temp, { text, width:size, height:size, colorDark:'#000', colorLight:bgMode==='transparent'?'rgba(0,0,0,0)':'#fff' });
+  new QRCode(temp, {
+    text,
+    width:size,
+    height:size,
+    colorDark:'#000000',
+    colorLight: bgMode==='transparent' ? 'rgba(0,0,0,0)' : '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
 
-  const qrCanvas = temp.querySelector('canvas');
+  baseQRCanvas = temp.querySelector('canvas');
+  repaintQR();
+}
+
+function repaintQR(){
+  if(!baseQRCanvas) return;
+
+  const size = parseInt(document.getElementById('size').value);
+  const bgMode = document.getElementById('bgMode').value;
   const canvas = document.getElementById('canvas');
-  canvas.width = size; canvas.height = size;
+  canvas.width = size;
+  canvas.height = size;
+
   const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,size,size);
 
   if(bgMode === 'white'){
-    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,size,size);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,size,size);
   }
 
   const grad = ctx.createLinearGradient(0,0,size,size);
   grad.addColorStop(0, document.getElementById('color1').value);
   grad.addColorStop(1, document.getElementById('color2').value);
 
+  ctx.drawImage(baseQRCanvas,0,0,size,size);
+  ctx.globalCompositeOperation = 'source-in';
   ctx.fillStyle = grad;
+  ctx.fillRect(0,0,size,size);
   ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(qrCanvas,0,0);
+}
+
+function liveUpdate(){
+  if(!baseQRCanvas){ generateQR(); return; }
+  repaintQR();
 }
 
 function downloadPNG(){
