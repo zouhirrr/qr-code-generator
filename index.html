@@ -2,29 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Qrestige PRO Ultimate - عربي</title>
-
-<!-- Google Font Tajawal -->
+<title>Qrestige PRO Ultimate - جاهزة للبيع</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
-<!-- المكتبات -->
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
 :root{
---dark-bg:#0d0f14;
---light-bg:#f5f5f5;
---dark-panel:#141622;
---light-panel:#eaeaea;
+--dark-bg:#0d0f14; --light-bg:#f5f5f5;
+--dark-panel:#141622; --light-panel:#eaeaea;
 --accent:#7c7cff;
---text-dark:#0d0f14;
---text-light:#fff;
+--text-dark:#0d0f14; --text-light:#fff;
 }
 *{box-sizing:border-box;font-family:'Tajawal',sans-serif;}
 body{margin:0;display:flex;height:100vh;transition:.3s;}
-aside{width:360px;padding:20px;overflow:auto;transition:.3s;}
+aside{width:380px;padding:20px;overflow:auto;transition:.3s;}
 main{flex:1;display:flex;justify-content:center;align-items:center;transition:.3s;}
 .stage{padding:40px;background:#111;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;transition:.3s;}
 .stage.transparent{background:none;box-shadow:none;padding:0;}
@@ -51,19 +45,22 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <body class="dark">
 
 <aside>
-<h2>كيو بريستيج PRO Ultimate</h2>
+<h2>كيو بريستيج PRO</h2>
 <div class="tabs">
 <div class="tab active" data-tab="content">المحتوى</div>
 <div class="tab" data-tab="style">التصميم</div>
 <div class="tab" data-tab="logo">الشعار</div>
+<div class="tab" data-tab="templates">القوالب</div>
 <div class="tab" data-tab="export">التصدير</div>
 </div>
 
+<!-- المحتوى -->
 <div id="content" class="tab-content active">
 <label>رابط / نص QR</label><input id="data" value="https://example.com">
 <label>النص السفلي</label><input id="caption" value="امسح هنا">
 </div>
 
+<!-- التصميم -->
 <div id="style" class="tab-content">
 <label>لون التدرج البداية</label><input type="color" id="c1" value="#000000">
 <label>لون التدرج النهاية</label><input type="color" id="c2" value="#7c7cff">
@@ -78,11 +75,22 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <label><input type="checkbox" id="themeSwitch"> الوضع الفاتح</label>
 </div>
 
+<!-- الشعار -->
 <div id="logo" class="tab-content">
 <label>اختر شعار</label><input type="file" id="logoInput">
 <label>حجم الشعار (%)</label><input type="range" id="logoSize" min="10" max="40" value="25">
 </div>
 
+<!-- القوالب الجاهزة -->
+<div id="templates" class="tab-content">
+<button onclick="applyTemplate('corporate')">قالب رسمي</button>
+<button onclick="applyTemplate('event')">قالب فعالية</button>
+<button onclick="applyTemplate('minimal')">قالب حديث</button>
+<button onclick="applyTemplate('luxury')">قالب فاخر</button>
+<button onclick="applyTemplate('tech')">قالب تقني</button>
+</div>
+
+<!-- التصدير -->
 <div id="export" class="tab-content">
 <button onclick="savePreset()">حفظ الإعدادات</button>
 <button class="secondary" onclick="loadPreset()">تحميل الإعدادات</button>
@@ -102,101 +110,54 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 
 <script>
 let logoData=null;
-const qr=new QRCodeStyling({
-width:300,height:300,type:"canvas",
-dotsOptions:{type:"extra-rounded"},
-backgroundOptions:{color:"transparent"}
-});
+const qr=new QRCodeStyling({width:300,height:300,type:"canvas",dotsOptions:{type:"extra-rounded"},backgroundOptions:{color:"transparent"}});
 qr.append(document.getElementById("qr"));
 
-function update(){
-qr.update({
-data:data.value,
-image:logoData,
-imageOptions:{imageSize:logoSize.value/100,margin:margin.value},
-qrOptions:{errorCorrectionLevel:error.value},
-dotsOptions:{gradient:{type:"linear",colorStops:[{offset:0,color:c1.value},{offset:1,color:c2.value}]}}
-});
-cap.textContent=caption.value;
-cap.style.color=c1.value;
-stage.classList.toggle("transparent",transparent.checked);
+const templates={
+corporate:{c1:'#000000',c2:'#7c7cff',caption:'امسح هنا',error:'H',margin:6,logoSize:25},
+event:{c1:'#ff4d4d',c2:'#ffcc00',caption:'فعالية اليوم',error:'Q',margin:6,logoSize:30},
+minimal:{c1:'#555',c2:'#aaa',caption:'مسح سريع',error:'M',margin:4,logoSize:20},
+luxury:{c1:'#FFD700',c2:'#8B0000',caption:'فاخر',error:'H',margin:6,logoSize:25},
+tech:{c1:'#00ffff',c2:'#0000ff',caption:'Tech QR',error:'Q',margin:6,logoSize:25}
+};
 
-// Safe Zone
+function applyTemplate(name){
+const t=templates[name];
+c1.value=t.c1;c2.value=t.c2;caption.value=t.caption;error.value=t.error;margin.value=t.margin;logoSize.value=t.logoSize;
+update();
+}
+
+function update(){
+qr.update({data:data.value,image:logoData,imageOptions:{imageSize:logoSize.value/100,margin:margin.value},qrOptions:{errorCorrectionLevel:error.value},dotsOptions:{gradient:{type:'linear',colorStops:[{offset:0,color:c1.value},{offset:1,color:c2.value}]}}});
+cap.textContent=caption.value;cap.style.color=c1.value;stage.classList.toggle("transparent",transparent.checked);
 const sz=document.getElementById("safeZone");
-if(safe.checked){
-sz.style.display="block";
-sz.style.width=qr._options.width*logoSize.value/100+"px";
-sz.style.height=sz.style.width;
-sz.style.top="50%";
-sz.style.left="50%";
-sz.style.transform="translate(-50%,-50%)";
-}else sz.style.display="none";
+if(safe.checked){sz.style.display="block";sz.style.width=qr._options.width*logoSize.value/100+"px";sz.style.height=sz.style.width;sz.style.top="50%";sz.style.left="50%";sz.style.transform="translate(-50%,-50%)";}else sz.style.display="none";
 }
 
 // تبويبات
-document.querySelectorAll(".tab").forEach(tab=>{
-tab.onclick=()=>{
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-tab.classList.add("active");
-document.getElementById(tab.dataset.tab).classList.add("active");
-};
-});
+document.querySelectorAll(".tab").forEach(tab=>{tab.onclick=()=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));tab.classList.add("active");document.getElementById(tab.dataset.tab).classList.add("active");}});
 
 // Inputs
 document.querySelectorAll("input,select").forEach(e=>e.oninput=update);
 
-// Logo upload
-logoInput.onchange=e=>{
-const r=new FileReader();
-r.onload=()=>{logoData=r.result;update();}
-r.readAsDataURL(e.target.files[0]);
-};
+// Logo
+logoInput.onchange=e=>{const r=new FileReader();r.onload=()=>{logoData=r.result;update();};r.readAsDataURL(e.target.files[0]);};
 
 // Presets
-function savePreset(){
-localStorage.qrestige=JSON.stringify({
-data:data.value,caption:caption.value,
-c1:c1.value,c2:c2.value,
-logoSize:logoSize.value,error:error.value,margin:margin.value
-});
-alert("تم حفظ الإعدادات");
-}
-function loadPreset(){
-const p=JSON.parse(localStorage.qrestige||"{}");
-if(!p) return;
-data.value=p.data||data.value;
-caption.value=p.caption||caption.value;
-c1.value=p.c1||c1.value;
-c2.value=p.c2||c2.value;
-logoSize.value=p.logoSize||logoSize.value;
-error.value=p.error||error.value;
-margin.value=p.margin||margin.value;
-update();
-}
+function savePreset(){localStorage.qrestige=JSON.stringify({data:data.value,caption:caption.value,c1:c1.value,c2:c2.value,logoSize:logoSize.value,error:error.value,margin:margin.value});alert("تم حفظ الإعدادات");}
+function loadPreset(){const p=JSON.parse(localStorage.qrestige||"{}");if(!p) return;data.value=p.data||data.value;caption.value=p.caption||caption.value;c1.value=p.c1||c1.value;c2.value=p.c2||c2.value;logoSize.value=p.logoSize||logoSize.value;error.value=p.error||error.value;margin.value=p.margin||margin.value;update();}
 
 // Theme
-themeSwitch.onchange=()=>{document.body.classList.toggle("light",themeSwitch.checked);
-main.classList.toggle("light",themeSwitch.checked);
-stage.classList.toggle("light",themeSwitch.checked);
-cap.classList.toggle("light",themeSwitch.checked);
-};
+themeSwitch.onchange=()=>{document.body.classList.toggle("light",themeSwitch.checked);main.classList.toggle("light",themeSwitch.checked);stage.classList.toggle("light",themeSwitch.checked);cap.classList.toggle("light",themeSwitch.checked);};
 
 // Exports
-async function exportPNG(){
-const c=await html2canvas(stage,{scale:3,backgroundColor:null});
-download(c.toDataURL(),"qrestige.png");
-}
-async function exportPDF(){
-const c=await html2canvas(stage,{scale:4,backgroundColor:null});
-const pdf=new jspdf.jsPDF({unit:"px",format:[c.width,c.height]});
-pdf.addImage(c.toDataURL(),"PNG",0,0);
-pdf.save("qrestige.pdf");
-}
+async function exportPNG(){const c=await html2canvas(stage,{scale:3,backgroundColor:null});download(c.toDataURL(),"qrestige.png");}
+async function exportPDF(){const c=await html2canvas(stage,{scale:4,backgroundColor:null});const pdf=new jspdf.jsPDF({unit:"px",format:[c.width,c.height]});pdf.addImage(c.toDataURL(),"PNG",0,0);pdf.save("qrestige.pdf");}
 function exportSVG(){qr.download({extension:"svg",name:"qrestige"});}
 function download(h,name){const a=document.createElement("a");a.href=h;a.download=name;a.click();}
 
 update();
 </script>
+
 </body>
 </html>
