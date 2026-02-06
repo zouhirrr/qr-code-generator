@@ -3,69 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد QR Code مع ميزة التحميل</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>QR Pro Max | مولد الأكواد الذكي</title>
+    <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.4.13/dist/easy.qrcode.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; width: 380px; }
-        h2 { color: #1a73e8; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 14px; margin-bottom: 1rem; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 15px; }
-        input:focus { border-color: #1a73e8; box-shadow: 0 0 8px rgba(26,115,232,0.2); }
-        .buttons { display: flex; gap: 10px; flex-direction: column; }
-        button { border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; }
-        .btn-gen { background-color: #1a73e8; color: white; }
-        .btn-gen:hover { background-color: #1557b0; }
-        .btn-down { background-color: #34a853; color: white; display: none; margin-top: 10px; text-decoration: none; line-height: 2.5; }
-        .btn-down:hover { background-color: #2d8e47; }
-        #qrcode { margin-top: 25px; display: flex; justify-content: center; padding: 10px; background: #fff; border-radius: 10px; }
-        canvas { max-width: 100%; border: 2px solid #eee; border-radius: 10px; }
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        p { color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem; }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: 0.3s;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .color-picker {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            font-size: 12px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-generate:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        #qrcode {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            display: inline-block;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0);
+        }
+
+        #qrcode.show { transform: scale(1); }
+
+        .download-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .btn-download {
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>مولد QR Code ذكي</h2>
-    <input type="text" id="text" placeholder="أدخل الرابط أو النص هنا...">
-    
-    <div class="buttons">
-        <button class="btn-gen" onclick="generateQR()">إنشاء الرمز</button>
-        <a id="downloadLink" class="btn-down" download="qrcode.png">تحميل الصورة بجودة عالية</a>
+<div class="glass-card">
+    <h1>QR PRO MAX</h1>
+    <p>حوّل روابطك إلى تجربة رقمية أنيقة</p>
+
+    <div class="input-group">
+        <input type="text" id="qrText" placeholder="أدخل الرابط (مثلاً رابط العيادة)...">
     </div>
 
+    <div class="controls">
+        <div class="color-picker">
+            <span>لون الكود:</span>
+            <input type="color" id="dotColor" value="#6366f1" style="width: 30px; height: 30px; padding: 0; border: none;">
+        </div>
+        <div class="color-picker">
+            <span>الخلفية:</span>
+            <input type="color" id="bgColor" value="#ffffff" style="width: 30px; height: 30px; padding: 0; border: none;">
+        </div>
+    </div>
+
+    <button class="btn-generate" onclick="generateQR()">توليد الرمز الذكي</button>
+
     <div id="qrcode"></div>
+
+    <div class="download-container" id="dlContainer">
+        <button class="btn-download" onclick="downloadQR()">تحميل بصيغة PNG</button>
+    </div>
 </div>
 
 <script>
-    // تهيئة مكتبة QR Code
-    var qrcode = new QRCode(document.getElementById("qrcode"), {
-        width: 250,
-        height: 250,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+    let qrcodeInstance = null;
 
     function generateQR() {
-        var elInput = document.getElementById("text");
-        var downloadBtn = document.getElementById("downloadLink");
+        const text = document.getElementById("qrText").value;
+        const dotColor = document.getElementById("dotColor").value;
+        const bgColor = document.getElementById("bgColor").value;
+        const qrContainer = document.getElementById("qrcode");
 
-        if (!elInput.value.trim()) {
-            alert("يرجى إدخال رابط أو نص أولاً!");
+        if (!text) {
+            alert("أدخل الرابط أولاً يا بطل!");
             return;
         }
 
-        // إنشاء الرمز
-        qrcode.makeCode(elInput.value);
+        // مسح الكود القديم
+        qrContainer.innerHTML = "";
+        qrContainer.classList.remove("show");
 
-        // إظهار زر التحميل بعد فترة قصيرة لضمان توليد الصورة
-        setTimeout(function() {
-            var canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                var image = canvas.toDataURL("image/png");
-                downloadBtn.href = image;
-                downloadBtn.style.display = "block";
-            }
-        }, 500);
+        // إعدادات احترافية جداً
+        const options = {
+            text: text,
+            width: 200,
+            height: 200,
+            colorDark: dotColor,
+            colorLight: bgColor,
+            correctLevel: QRCode.CorrectLevel.H, // حماية عالية عند التلف
+            dotScale: 0.8, // شكل النقاط عصري
+            
+            // إضافة ميزة الشعار (يمكنك استبدال الرابط بشعار الطبيب)
+            logo: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
+            logoWidth: 50,
+            logoHeight: 50,
+            logoBackgroundColor: '#ffffff',
+            logoBackgroundTransparent: false
+        };
+
+        setTimeout(() => {
+            qrcodeInstance = new EasyQRCode(qrContainer, options);
+            qrContainer.classList.add("show");
+            document.getElementById("dlContainer").style.display = "block";
+        }, 300);
+    }
+
+    function downloadQR() {
+        const canvas = document.querySelector("#qrcode canvas");
+        const link = document.createElement("a");
+        link.download = "Smart-QR-Doctor.png";
+        link.href = canvas.toDataURL();
+        link.click();
     }
 </script>
 
