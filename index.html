@@ -1,275 +1,241 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>Qrestige – Pro QR Generator</title>
+<meta charset="UTF-8">
+<title>Qrestige PRO</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-  <style>
-    :root {
-      --bg-dark: #0f0f12;
-      --panel: #16161d;
-      --accent: #7c7cff;
-      --text: #f5f5f7;
-    }
+<style>
+body{
+margin:0;
+font-family:Tajawal;
+background:#0d0f14;
+color:#fff;
+display:flex;
+height:100vh;
+}
 
-    * { box-sizing: border-box; }
+aside{
+width:340px;
+background:#141622;
+padding:20px;
+overflow:auto;
+}
 
-    body {
-      margin: 0;
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text);
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+h2{font-weight:900;margin-bottom:10px}
 
-    /* Sidebar */
-    .sidebar {
-      width: 320px;
-      background: var(--panel);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+label{font-size:13px;opacity:.8}
+input,select,button{
+width:100%;
+margin-top:6px;
+margin-bottom:12px;
+padding:10px;
+border-radius:8px;
+border:none;
+font-family:inherit;
+}
 
-    .sidebar h2 {
-      font-weight: 900;
-      margin-bottom: 5px;
-    }
+button{background:#7c7cff;color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#2a2d3d}
 
-    .control {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
-    }
+main{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+background:
+radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px);
+background-size:18px 18px;
+}
 
-    input, button {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-family: inherit;
-    }
+.stage{
+padding:40px;
+background:#111;
+border-radius:20px;
+box-shadow:0 30px 80px rgba(0,0,0,.6);
+position:relative;
+transition:.3s;
+}
 
-    input[type="color"] {
-      padding: 3px;
-      height: 40px;
-    }
+.stage.transparent{
+background:none;
+box-shadow:none;
+padding:0;
+}
 
-    button {
-      cursor: pointer;
-      background: var(--accent);
-      color: white;
-      font-weight: 700;
-    }
+#safeZone{
+position:absolute;
+border:2px dashed red;
+border-radius:50%;
+pointer-events:none;
+display:none;
+}
 
-    button.secondary {
-      background: #2a2a35;
-    }
-
-    /* Viewer */
-    .viewer {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      background:
-        radial-gradient(circle, rgba(255,255,255,.07) 1px, transparent 1px);
-      background-size: 18px 18px;
-    }
-
-    .stage {
-      padding: 40px;
-      background: #111;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.5);
-      text-align: center;
-      transition: all .3s ease;
-    }
-
-    .stage.transparent {
-      background: none;
-      box-shadow: none;
-      padding: 0;
-    }
-
-    #qr-wrapper {
-      display: flex;
-      justify-content: center;
-    }
-
-    .caption {
-      margin-top: 16px;
-      font-weight: 900;
-      font-size: 22px;
-    }
-  </style>
+.caption{
+margin-top:16px;
+font-weight:900;
+font-size:22px;
+text-align:center;
+}
+</style>
 </head>
+
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <h2>Qrestige</h2>
+<aside>
+<h2>Qrestige PRO</h2>
 
-  <div class="control">
-    <label>المحتوى</label>
-    <input id="qrData" value="https://example.com" />
-  </div>
+<label>Data</label>
+<input id="data" value="https://example.com">
 
-  <div class="control">
-    <label>النص السفلي</label>
-    <input id="caption" value="SCAN ME" />
-  </div>
+<label>Caption</label>
+<input id="caption" value="SCAN ME">
 
-  <div class="control">
-    <label>لون التدرج (بداية)</label>
-    <input type="color" id="color1" value="#000000" />
-  </div>
+<label>Gradient Start</label>
+<input type="color" id="c1" value="#000000">
 
-  <div class="control">
-    <label>لون التدرج (نهاية)</label>
-    <input type="color" id="color2" value="#7c7cff" />
-  </div>
+<label>Gradient End</label>
+<input type="color" id="c2" value="#7c7cff">
 
-  <div class="control">
-    <label>شعار (Logo)</label>
-    <input type="file" id="logoInput" accept="image/*" />
-  </div>
+<label>Logo</label>
+<input type="file" id="logo">
 
-  <div class="control">
-    <label>
-      <input type="checkbox" id="transparentMode" />
-      وضع الشفافية المطلقة
-    </label>
-  </div>
+<label>Logo Size (%)</label>
+<input type="range" id="logoSize" min="10" max="40" value="25">
 
-  <button onclick="exportPNG()">Export PNG</button>
-  <button class="secondary" onclick="exportPDF()">Export PDF</button>
+<label>Error Correction</label>
+<select id="error">
+<option value="L">L</option>
+<option value="M">M</option>
+<option value="Q">Q</option>
+<option value="H" selected>H</option>
+</select>
+
+<label>Margin</label>
+<input type="range" id="margin" min="0" max="20" value="6">
+
+<label><input type="checkbox" id="transparent"> Absolute Transparency</label>
+<label><input type="checkbox" id="safe"> Safe Zone Checker</label>
+
+<button onclick="savePreset()">Save Preset</button>
+<button class="secondary" onclick="loadPreset()">Load Preset</button>
+
+<button onclick="exportPNG()">Export PNG</button>
+<button onclick="exportPDF()">Export PDF</button>
+<button onclick="exportSVG()">Export SVG</button>
+</aside>
+
+<main>
+<div class="stage" id="stage">
+<div id="qr"></div>
+<div id="safeZone"></div>
+<div class="caption" id="cap">SCAN ME</div>
 </div>
-
-<!-- Viewer -->
-<div class="viewer">
-  <div class="stage" id="stage">
-    <div id="qr-wrapper"></div>
-    <div class="caption" id="captionView">SCAN ME</div>
-  </div>
-</div>
+</main>
 
 <script>
-  const qrWrapper = document.getElementById("qr-wrapper");
-  const captionView = document.getElementById("captionView");
-  const stage = document.getElementById("stage");
+let logoData=null;
 
-  let logoImage = null;
+const qr=new QRCodeStyling({
+width:300,height:300,type:"canvas",
+dotsOptions:{type:"extra-rounded"},
+backgroundOptions:{color:"transparent"}
+});
 
-  const qr = new QRCodeStyling({
-    width: 300,
-    height: 300,
-    type: "canvas",
-    data: "https://example.com",
-    dotsOptions: {
-      type: "extra-rounded",
-      gradient: {
-        type: "linear",
-        rotation: 0,
-        colorStops: [
-          { offset: 0, color: "#000000" },
-          { offset: 1, color: "#7c7cff" }
-        ]
-      }
-    },
-    backgroundOptions: { color: "transparent" },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 6
-    }
-  });
+qr.append(document.getElementById("qr"));
 
-  qr.append(qrWrapper);
+function update(){
+qr.update({
+data:data.value,
+image:logoData,
+imageOptions:{
+imageSize:logoSize.value/100,
+margin:margin.value
+},
+qrOptions:{errorCorrectionLevel:error.value},
+dotsOptions:{
+gradient:{
+type:"linear",
+colorStops:[
+{offset:0,color:c1.value},
+{offset:1,color:c2.value}
+]}
+}
+);
 
-  function updateQR() {
-    const c1 = color1.value;
-    const c2 = color2.value;
+cap.textContent=caption.value;
+cap.style.color=c1.value;
 
-    qr.update({
-      data: qrData.value,
-      image: logoImage,
-      dotsOptions: {
-        gradient: {
-          colorStops: [
-            { offset: 0, color: c1 },
-            { offset: 1, color: c2 }
-          ]
-        }
-      }
-    });
+stage.classList.toggle("transparent",transparent.checked);
 
-    captionView.textContent = caption.value;
-    captionView.style.color = c1;
+// Safe Zone
+const sz=document.getElementById("safeZone");
+if(safe.checked){
+sz.style.display="block";
+sz.style.width=qr._options.width*logoSize.value/100+"px";
+sz.style.height=sz.style.width;
+sz.style.top="50%";
+sz.style.left="50%";
+sz.style.transform="translate(-50%,-50%)";
+}else sz.style.display="none";
+}
 
-    if (transparentMode.checked) {
-      stage.classList.add("transparent");
-    } else {
-      stage.classList.remove("transparent");
-    }
-  }
+document.querySelectorAll("input,select").forEach(e=>e.oninput=update);
 
-  document.querySelectorAll("input").forEach(el =>
-    el.addEventListener("input", updateQR)
-  );
+logo.onchange=e=>{
+const r=new FileReader();
+r.onload=()=>{logoData=r.result;update();}
+r.readAsDataURL(e.target.files[0]);
+};
 
-  logoInput.addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      logoImage = reader.result;
-      updateQR();
-    };
-    reader.readAsDataURL(file);
-  });
+function savePreset(){
+localStorage.qrestige=JSON.stringify({
+data:data.value,caption:caption.value,
+c1:c1.value,c2:c2.value,
+logoSize:logoSize.value,error:error.value,margin:margin.value
+});
+alert("Preset Saved");
+}
 
-  async function exportPNG() {
-    const canvas = await html2canvas(stage, {
-      scale: 3,
-      backgroundColor: null,
-      useCORS: true
-    });
-    const link = document.createElement("a");
-    link.download = "qrestige.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  }
+function loadPreset(){
+const p=JSON.parse(localStorage.qrestige||"{}");
+Object.assign(data,p);
+caption.value=p.caption||caption.value;
+c1.value=p.c1||c1.value;
+c2.value=p.c2||c2.value;
+logoSize.value=p.logoSize||logoSize.value;
+error.value=p.error||error.value;
+margin.value=p.margin||margin.value;
+update();
+}
 
-  async function exportPDF() {
-    const canvas = await html2canvas(stage, {
-      scale: 4,
-      backgroundColor: null,
-      useCORS: true
-    });
+async function exportPNG(){
+const c=await html2canvas(stage,{scale:3,backgroundColor:null});
+download(c.toDataURL(),"qrestige.png");
+}
 
-    const img = canvas.toDataURL("image/png");
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [canvas.width, canvas.height]
-    });
+async function exportPDF(){
+const c=await html2canvas(stage,{scale:4,backgroundColor:null});
+const pdf=new jspdf.jsPDF({unit:"px",format:[c.width,c.height]});
+pdf.addImage(c.toDataURL(),"PNG",0,0);
+pdf.save("qrestige.pdf");
+}
 
-    pdf.addImage(img, "PNG", 0, 0);
-    pdf.save("qrestige-print.pdf");
-  }
+function exportSVG(){
+qr.download({extension:"svg",name:"qrestige"});
+}
+
+function download(href,name){
+const a=document.createElement("a");
+a.href=href;a.download=name;a.click();
+}
+
+update();
 </script>
 
 </body>
