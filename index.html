@@ -1,204 +1,212 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Qrestige PRO Ultimate – عربي</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qrestige | Sovereign Design Engine</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<!-- مكتبات QR + Export -->
-<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --accent: #6366f1;
+            --dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: #e2e8f0;
+        }
 
-<style>
-:root{
---dark-bg:#1E1E2F; --dark-panel:#28293D; --accent:#7C7CFF; --safeZoneColor:rgba(255,111,97,0.5);
---light-bg:#F5F5F5; --light-panel:#FFFFFF; --text-dark:#1E1E2F; --text-light:#FFFFFF;
-}
-*{box-sizing:border-box;font-family:'Tajawal',sans-serif;margin:0;padding:0;}
-body{display:flex;height:100vh;transition:.3s;}
-aside{width:400px;padding:25px;overflow:auto;background:var(--dark-panel);display:flex;flex-direction:column;gap:15px;transition:.3s;}
-aside h2{text-align:center;font-weight:900;margin-bottom:15px;color:var(--text-light);}
-main{flex:1;display:flex;justify-content:center;align-items:center;transition:.3s;background:var(--dark-bg);}
-.stage{width:360px;height:360px;background:#111;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.3s;}
-.stage.transparent{background:none;box-shadow:none;padding:0;}
-#safeZone{position:absolute;border:2px dashed var(--safeZoneColor);border-radius:50%;pointer-events:none;display:none;}
-.caption{text-align:center;margin-top:16px;font-weight:900;font-size:22px;color:var(--text-light);}
-.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
-.tab{flex:1;padding:10px;background:#2a2d3d;color:#fff;text-align:center;cursor:pointer;border-radius:8px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:.3s;}
-.tab.active{background:var(--accent);}
-.tab:hover{opacity:.9;}
-.tab-content{display:none;flex-direction:column;gap:12px;}
-.tab-content.active{display:flex;}
-input,select,button{padding:10px;border-radius:8px;border:none;font-family:inherit;transition:.3s;}
-input[type=color]{padding:3px;height:38px;}
-button{background:var(--accent);color:#fff;font-weight:700;cursor:pointer;}
-button:hover{opacity:.9;}
-button.secondary{background:#2a2d3d;}
-.slider-container{display:flex;align-items:center;gap:10px;}
-.slider-container input{flex:1;}
-.template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.template-grid button{padding:12px;background:#2a2d3d;color:#fff;border-radius:12px;font-weight:700;transition:.3s;}
-.template-grid button:hover{background:var(--accent);}
-body.light main{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px);background-size:18px 18px;}
-body.light .stage{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.2);}
-body.light .caption{color:var(--text-dark);}
-body.light aside{background:var(--light-panel);}
-body.light .tab{background:#ccc;color:var(--text-dark);}
-body.light .tab.active{background:var(--accent);color:#fff;}
-</style>
+        * { box-sizing: border-box; transition: all 0.3s ease; font-family: 'Tajawal', sans-serif !important; }
+        
+        body { 
+            background: #f8fafc; color: var(--dark); margin: 0; 
+            display: flex; height: 100vh; overflow: hidden;
+        }
+
+        /*Sidebar - Control Center*/
+        .sidebar {
+            width: 380px; background: white; border-left: 1px solid var(--border);
+            padding: 40px 30px; display: flex; flex-direction: column; 
+            box-shadow: 10px 0 30px rgba(0,0,0,0.02); z-index: 10;
+        }
+
+        .brand-header { text-align: center; margin-bottom: 40px; }
+        .brand-name { font-weight: 900; font-size: 42px; color: var(--dark); letter-spacing: -2px; }
+        .brand-tag { font-size: 12px; color: var(--accent); font-weight: 700; letter-spacing: 2px; }
+
+        .control-group { margin-bottom: 25px; }
+        .label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; display: block; }
+
+        input[type="text"] {
+            width: 100%; padding: 15px; border-radius: 14px; border: 2px solid #f1f5f9;
+            background: #f8fafc; font-size: 15px; outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--accent); background: white; }
+
+        .color-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-pill { 
+            background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 14px; 
+            padding: 8px 15px; display: flex; align-items: center; justify-content: space-between;
+        }
+        input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
+
+        /*Viewer - Presentation Layer*/
+        .viewer { 
+            flex: 1; display: flex; align-items: center; justify-content: center; 
+            background-color: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        #render-stage {
+            background: white; padding: 70px; border-radius: 60px;
+            display: flex; flex-direction: column; align-items: center;
+            width: 550px; box-shadow: 0 40px 80px rgba(15, 23, 42, 0.08);
+            position: relative;
+        }
+
+        /* وضع المصمم: إخفاء كل شيء ما عدا العناصر */
+        #render-stage.designer-mode { background: transparent; box-shadow: none; border: none; }
+
+        .output-text { 
+            margin-top: 35px; font-size: 38px; font-weight: 900; 
+            color: var(--dark); text-align: center; line-height: 1;
+        }
+
+        /*Actions*/
+        .actions { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+        .btn-prime {
+            background: var(--dark); color: white; border: none; padding: 20px;
+            border-radius: 18px; font-weight: 900; font-size: 18px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        }
+        .btn-prime:hover { transform: translateY(-3px); background: var(--accent); }
+        
+        .toggle-container {
+            margin: 20px 0; display: flex; align-items: center; justify-content: space-between;
+            padding: 15px; background: #f8fafc; border-radius: 14px; cursor: pointer;
+        }
+    </style>
 </head>
-<body class="dark">
+<body>
 
-<aside>
-<h2>كيو بريستيج PRO</h2>
-<div class="tabs">
-<div class="tab active" data-tab="content">المحتوى</div>
-<div class="tab" data-tab="style">التصميم</div>
-<div class="tab" data-tab="logo">الشعار</div>
-<div class="tab" data-tab="templates">القوالب</div>
-<div class="tab" data-tab="export">التصدير</div>
-</div>
+    <aside class="sidebar">
+        <div class="brand-header">
+            <div class="brand-name">Qrestige</div>
+            <div class="brand-tag">SOVEREIGN ENGINE</div>
+        </div>
+        
+        <div class="control-group">
+            <span class="label">البيانات الرقمية</span>
+            <input type="text" id="qr-data" placeholder="https://..." oninput="sync()">
+        </div>
 
-<!-- Content -->
-<div id="content" class="tab-content active">
-<label>رابط / نص QR</label><input id="data" value="https://example.com">
-<label>النص السفلي</label><input id="caption" value="امسح هنا">
-</div>
+        <div class="control-group">
+            <span class="label">النص التسويقي</span>
+            <input type="text" id="qr-label" placeholder="اطلب الآن" oninput="sync()">
+        </div>
 
-<!-- Style -->
-<div id="style" class="tab-content">
-<label>لون التدرج البداية</label><input type="color" id="c1" value="#000000">
-<label>لون التدرج النهاية</label><input type="color" id="c2" value="#7C7CFF">
-<label>مستوى تصحيح الخطأ</label>
-<select id="error">
-<option value="L">L</option><option value="M">M</option>
-<option value="Q">Q</option><option value="H" selected>H</option>
-</select>
-<div class="slider-container">
-<label>الهامش</label><input type="range" id="margin" min="0" max="20" value="6">
-<span id="marginVal">6</span>
-</div>
-<label><input type="checkbox" id="transparent"> الشفافية المطلقة</label>
-<label><input type="checkbox" id="safe"> منطقة الأمان للشعار</label>
-<label><input type="checkbox" id="themeSwitch"> الوضع الفاتح</label>
-</div>
+        <div class="control-group">
+            <span class="label">هوية الألوان</span>
+            <div class="color-stack">
+                <div class="color-pill"><input type="color" id="col1" value="#0f172a" oninput="sync()"></div>
+                <div class="color-pill"><input type="color" id="col2" value="#6366f1" oninput="sync()"></div>
+            </div>
+        </div>
 
-<!-- Logo -->
-<div id="logo" class="tab-content">
-<label>اختر شعار</label><input type="file" id="logoInput">
-<div class="slider-container">
-<label>حجم الشعار (%)</label><input type="range" id="logoSize" min="10" max="40" value="25">
-<span id="logoVal">25</span>
-</div>
-</div>
+        <div class="control-group">
+            <span class="label">شعار العلامة</span>
+            <input type="file" id="qr-logo" accept="image/*" onchange="sync()" style="font-size: 12px;">
+        </div>
 
-<!-- Templates -->
-<div id="templates" class="tab-content">
-<div class="template-grid">
-<button onclick="applyTemplate('corporate')">قالب رسمي</button>
-<button onclick="applyTemplate('event')">قالب فعالية</button>
-<button onclick="applyTemplate('minimal')">قالب حديث</button>
-<button onclick="applyTemplate('luxury')">قالب فاخر</button>
-<button onclick="applyTemplate('tech')">قالب تقني</button>
-</div>
-</div>
+        <div class="toggle-container" onclick="toggleMode()">
+            <span style="font-weight: 700; font-size: 14px;">وضع المصمم (شفاف)</span>
+            <input type="checkbox" id="mode-switch" style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
 
-<!-- Export -->
-<div id="export" class="tab-content">
-<button onclick="savePreset()">حفظ الإعدادات</button>
-<button class="secondary" onclick="loadPreset()">تحميل الإعدادات</button>
-<button onclick="exportPNG()">تصدير PNG</button>
-<button onclick="exportPDF()">تصدير PDF</button>
-<button onclick="exportSVG()">تصدير SVG</button>
-</div>
-</aside>
+        <div class="actions">
+            <button class="btn-prime" onclick="exportPDF()">تصدير PDF للطباعة</button>
+            <button style="background:none; border: 2px solid #e2e8f0; padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer;" onclick="exportPNG()">حفظ PNG دقة عالية</button>
+        </div>
+    </aside>
 
-<main>
-<div class="stage" id="stage">
-<div id="qr"></div>
-<div id="safeZone"></div>
-<div class="caption" id="cap">امسح هنا</div>
-</div>
-</main>
+    <main class="viewer">
+        <div id="render-stage">
+            <div id="qr-canvas"></div>
+            <div id="text-output" class="output-text">امسح الكود</div>
+        </div>
+    </main>
 
 <script>
-let logoData=null;
-const qr=new QRCodeStyling({
-width:360,height:360,type:"canvas",
-dotsOptions:{type:"extra-rounded"},
-backgroundOptions:{color:"transparent"}
-});
-qr.append(document.getElementById("qr"));
+    const { jsPDF } = window.jspdf;
 
-// Templates
-const templates={
-corporate:{c1:'#1E1E2F',c2:'#7C7CFF',caption:'امسح هنا',error:'H',margin:6,logoSize:25},
-event:{c1:'#FF4D4D',c2:'#FFCC00',caption:'فعالية اليوم',error:'Q',margin:6,logoSize:30},
-minimal:{c1:'#555555',c2:'#AAAAAA',caption:'مسح سريع',error:'M',margin:4,logoSize:20},
-luxury:{c1:'#FFD700',c2:'#8B0000',caption:'فاخر',error:'H',margin:6,logoSize:25},
-tech:{c1:'#00D8FF',c2:'#0044FF',caption:'Tech QR',error:'Q',margin:6,logoSize:25}
-};
+    const qr = new QRCodeStyling({
+        width: 380, height: 380,
+        dotsOptions: { type: "extra-rounded" },
+        backgroundOptions: { color: "#ffffff" },
+        imageOptions: { crossOrigin: "anonymous", margin: 12, imageSize: 0.45 }
+    });
 
-function applyTemplate(name){
-const t=templates[name];
-c1.value=t.c1;c2.value=t.c2;caption.value=t.caption;error.value=t.error;margin.value=t.margin;logoSize.value=t.logoSize;
-update();
-}
+    qr.append(document.getElementById("qr-canvas"));
 
-// Update Stage
-function update(){
-qr.update({
-data:data.value,
-image:logoData,
-imageOptions:{imageSize:logoSize.value/100,margin:margin.value},
-qrOptions:{errorCorrectionLevel:error.value},
-dotsOptions:{gradient:{type:"linear",colorStops:[{offset:0,color:c1.value},{offset:1,color:c2.value}]}}
-});
-cap.textContent=caption.value;
-cap.style.color=c1.value;
-stage.classList.toggle("transparent",transparent.checked);
-document.getElementById("safeZone").style.display=safe.checked?'block':'none';
-document.getElementById("marginVal").textContent=margin.value;
-document.getElementById("logoVal").textContent=logoSize.value;
-}
+    function sync() {
+        const data = document.getElementById('qr-data').value || "https://qrestige.ai";
+        const label = document.getElementById('qr-label').value || "امسح الكود";
+        const c1 = document.getElementById('col1').value;
+        const c2 = document.getElementById('col2').value;
+        const isDesigner = document.getElementById('mode-switch').checked;
+        const logo = document.getElementById('qr-logo').files[0];
 
-// Tabs
-document.querySelectorAll(".tab").forEach(tab=>{
-tab.onclick=()=>{
-document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-tab.classList.add("active");
-document.getElementById(tab.dataset.tab).classList.add("active");
-};
-});
+        const stage = document.getElementById('render-stage');
+        const txt = document.getElementById('text-output');
 
-// Inputs
-document.querySelectorAll("input,select").forEach(e=>e.oninput=update);
+        txt.innerText = label;
+        txt.style.color = isDesigner ? c1 : "#0f172a";
+        stage.className = isDesigner ? 'designer-mode' : '';
 
-// Logo upload
-logoInput.onchange=e=>{
-const r=new FileReader();
-r.onload=()=>{logoData=r.result;update();}
-r.readAsDataURL(e.target.files[0]);
-};
+        qr.update({
+            data: data,
+            dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
+            backgroundOptions: { color: isDesigner ? "transparent" : "#ffffff" },
+            cornersSquareOptions: { color: c1 }
+        });
 
-// Presets
-function savePreset(){localStorage.qrestige=JSON.stringify({data:data.value,caption:caption.value,c1:c1.value,c2:c2.value,logoSize:logoSize.value,error:error.value,margin:margin.value});alert("تم حفظ الإعدادات");}
-function loadPreset(){const p=JSON.parse(localStorage.qrestige||"{}");if(!p) return;data.value=p.data||data.value;caption.value=p.caption||caption.value;c1.value=p.c1||c1.value;c2.value=p.c2||c2.value;logoSize.value=p.logoSize||logoSize.value;error.value=p.error||error.value;margin.value=p.margin||margin.value;update();}
+        if (logo) {
+            const reader = new FileReader();
+            reader.onload = (e) => qr.update({ image: e.target.result });
+            reader.readAsDataURL(logo);
+        }
+    }
 
-// Theme
-themeSwitch.onchange=()=>{document.body.classList.toggle("light",themeSwitch.checked);main.classList.toggle("light",themeSwitch.checked);stage.classList.toggle("light",themeSwitch.checked);cap.classList.toggle("light",themeSwitch.checked);};
+    function toggleMode() {
+        const sw = document.getElementById('mode-switch');
+        sw.checked = !sw.checked;
+        sync();
+    }
 
-// Export
-async function exportPNG(){const c=await html2canvas(stage,{scale:3,backgroundColor:null});download(c.toDataURL(),"qrestige.png");}
-async function exportPDF(){const c=await html2canvas(stage,{scale:4,backgroundColor:null});const pdf=new jspdf.jsPDF({unit:"px",format:[c.width,c.height]});pdf.addImage(c.toDataURL(),"PNG",0,0);pdf.save("qrestige.pdf");}
-function exportSVG(){qr.download({extension:"svg",name:"qrestige"});}
-function download(h,name){const a=document.createElement("a");a.href=h;a.download=name;a.click();}
+    async function exportPDF() {
+        const stage = document.getElementById('render-stage');
+        const canvas = await html2canvas(stage, { scale: 4, backgroundColor: null, useCORS: true });
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'p', unit: 'px', format: [canvas.width / 2, canvas.height / 2]
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+        pdf.save(`Qrestige_Sovereign_${Date.now()}.pdf`);
+    }
 
-// Initialize
-update();
+    async function exportPNG() {
+        const stage = document.getElementById('render-stage');
+        const canvas = await html2canvas(stage, { scale: 3, backgroundColor: null, useCORS: true });
+        const link = document.createElement('a');
+        link.download = 'Qrestige_Pro.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+    sync();
 </script>
-
 </body>
 </html>
