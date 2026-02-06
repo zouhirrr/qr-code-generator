@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Elite Designer | ميزة النص المخصص</title>
+    <title>QR Elite Designer | النسخة الشاملة 2026</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
@@ -14,9 +14,8 @@
             --primary: #6366f1;
             --secondary: #a855f7;
             --bg: #0b0f1a;
-            --card-bg: rgba(30, 41, 59, 0.6);
+            --card-bg: rgba(30, 41, 59, 0.7);
             --border: rgba(255, 255, 255, 0.1);
-            --text-muted: #94a3b8;
         }
 
         body {
@@ -48,46 +47,45 @@
             background: var(--card-bg); backdrop-filter: blur(15px); border-radius: 35px; padding: 35px; border: 1px solid var(--border);
         }
 
-        .section-tag { font-size: 0.8rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .section-tag { font-size: 0.8rem; font-weight: 800; color: var(--primary); margin: 20px 0; display: flex; align-items: center; gap: 10px; }
         .section-tag::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
         .input-field {
             width: 100%; background: rgba(15, 23, 42, 0.8); border: 1.5px solid var(--border);
-            border-radius: 18px; padding: 16px; color: white; font-family: 'Tajawal'; margin-bottom: 25px; box-sizing: border-box;
+            border-radius: 18px; padding: 16px; color: white; font-family: 'Tajawal'; margin-bottom: 15px; box-sizing: border-box; transition: 0.3s;
+        }
+        .input-field:focus { border-color: var(--primary); outline: none; }
+
+        .toggle-group {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 20px;
         }
 
-        /* ستايل حقل النص الخاص بالإطار */
-        .frame-text-input {
-            border: 2px solid var(--primary);
-            background: rgba(99, 102, 241, 0.1);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
+        .preview-side { position: sticky; top: 100px; text-align: center; }
 
-        .preview-side { position: sticky; top: 120px; text-align: center; }
-
-        /* منطقة المعاينة */
+        /* منطقة التصميم القابلة للالتقاط */
         .capture-container {
             background: white; padding: 40px; border-radius: 40px; display: inline-block;
-            margin-bottom: 30px; color: #0f172a; position: relative;
-            border: 8px solid #1e293b; /* الإطار الافتراضي */
-            transition: 0.3s;
+            margin-bottom: 25px; color: #0f172a; border: 8px solid #1e293b; transition: 0.3s;
         }
 
         .qr-label-display {
-            margin-top: 20px;
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: #1e293b;
-            max-width: 280px;
-            word-wrap: break-word;
+            margin-top: 15px; font-weight: 900; font-size: 1.4rem; color: #1e293b;
+            max-width: 280px; word-wrap: break-word; line-height: 1.2;
         }
 
-        .btn-download {
-            width: 100%; padding: 20px; border-radius: 20px; border: none;
+        /* أزرار التحميل */
+        .btn-main {
+            width: 100%; padding: 18px; border-radius: 18px; border: none;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; font-weight: 800; font-size: 1.2rem; cursor: pointer; font-family: 'Tajawal';
+            color: white; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-bottom: 10px;
         }
+        .format-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-sub {
+            background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border);
+            padding: 12px; border-radius: 12px; cursor: pointer; font-family: 'Tajawal'; transition: 0.3s;
+        }
+        .btn-sub:hover { background: var(--primary); }
     </style>
 </head>
 <body>
@@ -98,22 +96,34 @@
 
 <main class="main-wrapper">
     <div class="control-panel">
-        <div class="section-tag">1. المحتوى</div>
+        <div class="section-tag">1. المحتوى والروابط</div>
         <input type="text" id="qr-input" class="input-field" placeholder="ضع الرابط هنا..." oninput="updateQR()">
 
-        <div class="section-tag">2. الألوان</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+        <div class="section-tag">2. نص الإطار المخصص</div>
+        <input type="text" id="frame-text-input" class="input-field" 
+               style="border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.05);"
+               placeholder="مثال: امسح لحجز موعد" oninput="updateFrameText(this.value)">
+
+        <div class="section-tag">3. الألوان والشفافية</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <input type="color" id="color1" value="#6366f1" oninput="updateQR()" style="width:100%; height:45px; cursor:pointer;">
             <input type="color" id="color2" value="#a855f7" oninput="updateQR()" style="width:100%; height:45px; cursor:pointer;">
         </div>
+        
+        <div class="toggle-group">
+            <span>خلفية شفافة (للكود فقط)</span>
+            <input type="checkbox" id="is-transparent" onchange="updateQR()" style="width:20px; height:20px; cursor:pointer;">
+        </div>
 
-        <div class="section-tag">3. اكتب نص الإطار (مثلاً: امسح لحجز موعد)</div>
-        <input type="text" id="frame-text-input" class="input-field frame-text-input" 
-               placeholder="اكتب هنا ما سيظهر تحت الكود..." 
-               oninput="updateFrameText(this.value)">
-
-        <div class="section-tag">4. الشعار</div>
-        <input type="file" id="logo-file" accept="image/*" onchange="updateQR()" class="input-field">
+        <div class="section-tag">4. تخصيصات متقدمة</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <select id="dot-style" class="input-field" onchange="updateQR()">
+                <option value="extra-rounded">نقاط دائرية</option>
+                <option value="square">مربعات</option>
+                <option value="dots">نقاط ناعمة</option>
+            </select>
+            <input type="file" id="logo-file" accept="image/*" onchange="updateQR()" class="input-field" style="padding:10px; font-size:0.7rem;">
+        </div>
     </div>
 
     <div class="preview-side">
@@ -122,7 +132,13 @@
             <div id="display-text" class="qr-label-display">امسح الكود</div>
         </div>
 
-        <button class="btn-download" onclick="downloadFull()">تحميل التصميم بالكامل</button>
+        <button class="btn-main" onclick="downloadFullImage()">تحميل التصميم بالإطار (PNG)</button>
+        
+        <div class="format-grid">
+            <button class="btn-sub" onclick="exportCore('svg')">تحميل SVG</button>
+            <button class="btn-sub" onclick="exportCore('pdf')">تحميل PDF</button>
+        </div>
+        <p style="margin-top:15px; color: var(--text-muted); font-size: 0.8rem;">ملاحظة: SVG و PDF يحملان الكود فقط بدون الإطار للطباعة الاحترافية.</p>
     </div>
 </main>
 
@@ -139,24 +155,25 @@
 
     qrStyling.append(document.getElementById("qr-canvas"));
 
-    // تحديث النص تحت الكود لحظياً
     function updateFrameText(val) {
-        const display = document.getElementById('display-text');
-        display.innerText = val || "امسح الكود";
-        
-        // تغيير لون النص ليتناسب مع لون الكود المختار
-        display.style.color = document.getElementById("color1").value;
+        document.getElementById('display-text').innerText = val || "امسح الكود";
     }
 
     function updateQR() {
         const dataStr = document.getElementById("qr-input").value || " ";
         const c1 = document.getElementById("color1").value;
         const c2 = document.getElementById("color2").value;
+        const trans = document.getElementById("is-transparent").checked;
+        const style = document.getElementById("dot-style").value;
         const file = document.getElementById("logo-file").files[0];
 
         qrStyling.update({
             data: dataStr,
-            dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
+            dotsOptions: {
+                type: style,
+                gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] }
+            },
+            backgroundOptions: { color: trans ? "transparent" : "#ffffff" },
             cornersSquareOptions: { color: c1 }
         });
 
@@ -166,17 +183,24 @@
             reader.readAsDataURL(file);
         }
         
-        // تحديث لون النص السفلي أيضاً
+        // مزامنة لون نص الإطار مع لون الكود
         document.getElementById('display-text').style.color = c1;
+        document.getElementById('capture-zone').style.borderColor = c1;
     }
 
-    async function downloadFull() {
-        const target = document.getElementById('capture-zone');
-        const canvas = await html2canvas(target, { scale: 3, backgroundColor: null });
+    // وظيفة تحميل الإطار + الكود (PNG)
+    async function downloadFullImage() {
+        const zone = document.getElementById('capture-zone');
+        const canvas = await html2canvas(zone, { scale: 3, backgroundColor: null });
         const link = document.createElement('a');
-        link.download = 'Elite-QR-Custom.png';
+        link.download = 'Elite-Full-Design.png';
         link.href = canvas.toDataURL();
         link.click();
+    }
+
+    // وظيفة تحميل الكود الصافي (SVG / PDF)
+    function exportCore(ext) {
+        qrStyling.download({ name: "Elite-QR-Core", extension: ext });
     }
 </script>
 
