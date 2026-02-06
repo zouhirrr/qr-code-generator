@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Qrestige | Pro PDF Edition</title>
+    <title>Qrestige | Pro PDF Designer</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -13,26 +13,37 @@
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif !important; }
         body { background: #f1f5f9; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 360px; background: white; border-left: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; }
-        .logo { font-weight: 900; font-size: 32px; text-align: center; color: var(--brand); margin-bottom: 25px; }
+        /* Sidebar */
+        .sidebar { width: 360px; background: white; border-left: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow-y: auto; box-shadow: 5px 0 15px rgba(0,0,0,0.02); }
+        .logo { font-weight: 900; font-size: 32px; text-align: center; color: var(--brand); margin-bottom: 25px; letter-spacing: -1px; }
         
         .label { font-size: 11px; font-weight: 800; color: #94a3b8; margin-top: 15px; text-transform: uppercase; }
-        input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 5px; outline: none; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; margin-bottom: 5px; outline: none; }
+        input:focus { border-color: var(--accent); }
         
-        .viewer { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .viewer { flex: 1; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 20px 20px; }
         
-        /* إطار التصميم الرئيسي */
+        /* الإطار الذكي */
         #main-frame { 
             background: white; padding: 60px; border-radius: 50px; 
             display: flex; flex-direction: column; align-items: center; 
             width: 520px; box-shadow: 0 30px 60px rgba(0,0,0,0.06); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        #main-frame.transparent-mode { background: none !important; box-shadow: none; border: 3px dashed var(--accent); }
+        
+        /* حالة الشفافية: حذف الإطار تماماً */
+        #main-frame.transparent-mode { 
+            background: transparent !important; 
+            box-shadow: none !important; 
+            border: none !important; 
+            padding: 20px; /* تقليل الحشو لتركيز العناصر */
+        }
 
         .qr-text { margin-top: 30px; font-size: 34px; font-weight: 900; text-align: center; color: var(--brand); }
         
         .btn-group { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
-        .btn-pdf { background: var(--brand); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; }
+        .btn-pdf { background: var(--brand); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 900; cursor: pointer; font-size: 16px; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2); }
+        .btn-pdf:hover { transform: translateY(-2px); background: #1e293b; }
         .btn-png { background: white; color: var(--brand); border: 2px solid var(--brand); padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
@@ -41,29 +52,29 @@
     <aside class="sidebar">
         <div class="logo">Qrestige</div>
         
-        <div class="label">البيانات</div>
-        <input type="text" id="data-in" placeholder="أدخل الرابط" oninput="update()">
+        <div class="label">البيانات (Link/Text)</div>
+        <input type="text" id="data-in" placeholder="https://..." oninput="update()">
         
-        <div class="label">النص السفلي (تجوال)</div>
+        <div class="label">النص السفلي</div>
         <input type="text" id="text-in" placeholder="امسح الكود" oninput="update()">
 
-        <div class="label">الألوان</div>
+        <div class="label">تدرج ألوان الكود</div>
         <div style="display:flex; gap:10px;">
-            <input type="color" id="c1" value="#0f172a" oninput="update()" style="flex:1; height:45px; cursor:pointer;">
-            <input type="color" id="c2" value="#6366f1" oninput="update()" style="flex:1; height:45px; cursor:pointer;">
+            <input type="color" id="c1" value="#0f172a" oninput="update()" style="flex:1; height:45px; cursor:pointer; border:none; background:none;">
+            <input type="color" id="c2" value="#6366f1" oninput="update()" style="flex:1; height:45px; cursor:pointer; border:none; background:none;">
         </div>
 
-        <div class="label">توسيط الشعار</div>
-        <input type="file" id="logo-in" onchange="update()">
+        <div class="label">شعار المركز</div>
+        <input type="file" id="logo-in" accept="image/*" onchange="update()">
 
-        <div style="margin-top: 20px;">
-            <label style="cursor:pointer; font-weight: 700;">
-                <input type="checkbox" id="is-trans" onchange="update()"> خلفية شفافة
+        <div style="margin: 25px 0;">
+            <label style="cursor:pointer; font-weight: 900; display: flex; align-items: center; gap: 10px; color: var(--brand);">
+                <input type="checkbox" id="is-trans" onchange="update()" style="width: 18px; height: 18px;"> حذف الخلفية والإطار
             </label>
         </div>
 
         <div class="btn-group">
-            <button class="btn-pdf" onclick="exportPDF()">حفظ كملف PDF احترافي</button>
+            <button class="btn-pdf" onclick="exportPDF()">حفظ كملف PDF للطباعة</button>
             <button class="btn-png" onclick="exportPNG()">حفظ كصورة PNG</button>
         </div>
     </aside>
@@ -99,6 +110,7 @@
         const label = document.getElementById('text-target');
 
         label.innerText = t;
+        // في وضع الشفافية، يأخذ النص اللون الأول للكود لضمان التناسق
         label.style.color = trans ? col1 : "#0f172a";
         frame.className = trans ? 'transparent-mode' : '';
 
@@ -116,14 +128,13 @@
         }
     }
 
-    // وظيفة تصدير PDF العبقرية
     async function exportPDF() {
         const frame = document.getElementById('main-frame');
+        const isTrans = document.getElementById('is-trans').checked;
         
-        // تحويل الإطار إلى كانفاس عالي الدقة
         const canvas = await html2canvas(frame, { 
             scale: 4, 
-            backgroundColor: null,
+            backgroundColor: null, // يضمن شفافية الـ Canvas
             useCORS: true 
         });
         
@@ -135,7 +146,7 @@
         });
 
         pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
-        pdf.save("Qrestige_Official_Print.pdf");
+        pdf.save("Qrestige_Designer_Export.pdf");
     }
 
     async function exportPNG() {
