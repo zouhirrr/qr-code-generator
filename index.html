@@ -3,241 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Studio Elite | الـمـسـتـقـبـل</title>
+    <title>QR Studio Elite 2026</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     
     <style>
         :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --surface: #0a0a0f;
-            --card: #14141d;
-            --border: rgba(255, 255, 255, 0.08);
+            --accent: #007aff;
+            --bg: #f5f5f7;
+            --panel: rgba(255, 255, 255, 0.8);
         }
 
-        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
 
         body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--surface);
-            color: #e0e0e0; margin: 0; min-height: 100vh;
-            display: flex; flex-direction: column;
+            background-color: var(--bg);
+            margin: 0; display: flex; height: 100vh; overflow: hidden; color: #1d1d1f;
         }
 
-        /* نافبار فائق النحافة */
-        nav {
-            height: 70px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 40px; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
-            position: sticky; top: 0; z-index: 100;
+        /*Sidebar - التحكم */
+        .controls {
+            width: 380px; background: var(--panel); backdrop-filter: blur(20px);
+            border-left: 1px solid #d2d2d7; padding: 40px 30px;
+            display: flex; flex-direction: column; gap: 25px; z-index: 10;
         }
 
-        .logo { font-weight: 900; font-size: 1.4rem; color: #fff; letter-spacing: 1px; }
-        .logo span { color: var(--primary); }
+        h1 { font-size: 24px; font-weight: 900; margin: 0 0 10px 0; color: #000; }
+        
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-size: 13px; font-weight: 700; color: #86868b; }
 
-        .app-container {
-            display: flex; flex: 1; height: calc(100vh - 70px);
+        input[type="text"], select {
+            padding: 12px 15px; border-radius: 12px; border: 1px solid #d2d2d7;
+            background: #fff; font-size: 16px; outline: none;
+        }
+        input:focus { border-color: var(--accent); }
+
+        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-input { 
+            display: flex; align-items: center; gap: 10px; background: #fff; 
+            padding: 8px; border-radius: 10px; border: 1px solid #d2d2d7;
         }
 
-        /* الجانب الأيمن: أدوات التحكم */
-        .sidebar {
-            width: 400px; background: var(--card); border-left: 1px solid var(--border);
-            padding: 30px; overflow-y: auto;
+        /* Preview - منطقة العرض */
+        .preview-zone {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            background: #fff; position: relative; overflow: auto;
         }
 
-        .group-title { font-size: 0.75rem; font-weight: 700; color: #555; text-transform: uppercase; margin: 25px 0 15px; letter-spacing: 2px; }
-
-        .control-input {
-            width: 100%; background: #000; border: 1px solid var(--border);
-            border-radius: 12px; padding: 14px; color: #fff; font-family: inherit; margin-bottom: 15px;
-        }
-        .control-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
-
-        .color-row { display: flex; gap: 10px; }
-        .color-item { flex: 1; background: #000; border-radius: 12px; padding: 8px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-        input[type="color"] { width: 30px; height: 30px; border: none; background: none; cursor: pointer; }
-
-        /* الجانب الأيسر: منطقة العرض */
-        .viewer {
-            flex: 1; background: #050507; display: flex; align-items: center; justify-content: center;
-            padding: 40px; position: relative;
+        /* الحاوية التي سيتم تحميلها */
+        #export-container {
+            padding: 60px; background: #ffffff; border-radius: 40px;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; border: 1px solid #e5e5e5;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            /* نثبت العرض لضمان عدم تقطع الصورة */
+            width: 500px; height: 600px; flex-shrink: 0;
         }
 
-        /* منطقة التصميم (التي سيتم تصويرها) */
-        #render-target {
-            background: #ffffff; padding: 60px; border-radius: 40px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
-            border: 2px solid transparent; min-width: 450px;
+        #export-container.transparent {
+            background: none !important; border: 2px dashed var(--accent); box-shadow: none;
         }
 
-        #render-target.transparent { background: transparent !important; border: 4px dashed var(--primary); box-shadow: none; }
-
-        .frame-text {
-            margin-top: 30px; font-weight: 900; font-size: 2.2rem; color: #000;
-            text-align: center; direction: rtl; line-height: 1;
+        .qr-label {
+            margin-top: 30px; font-size: 32px; font-weight: 900;
+            color: #1d1d1f; text-align: center; direction: rtl;
+            word-break: break-word; width: 100%; line-height: 1.2;
         }
 
-        /* أزرار التحميل السفلية */
-        .floating-actions {
-            position: absolute; bottom: 40px; display: flex; gap: 15px;
-        }
-
+        /* Buttons */
         .btn-download {
-            background: #fff; color: #000; border: none; padding: 18px 40px;
-            border-radius: 15px; font-weight: 900; font-size: 1rem; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+            background: var(--accent); color: #fff; border: none;
+            padding: 18px; border-radius: 15px; font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: 0.2s; margin-top: auto;
         }
-        .btn-download:hover { transform: translateY(-5px); background: var(--primary); }
+        .btn-download:hover { background: #0056b3; transform: translateY(-2px); }
 
-        .btn-ghost {
-            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border);
-            padding: 18px 25px; border-radius: 15px; cursor: pointer;
+        .btn-secondary {
+            background: #e8e8ed; color: #1d1d1f; border: none;
+            padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">QR<span>STUDIO</span> ELITE</div>
-    <div id="status" style="font-size: 0.8rem; color: #444;">IDLE / READY</div>
-</nav>
-
-<div class="app-container">
-    <div class="viewer">
-        <div id="render-target">
-            <div id="canvas-container"></div>
-            <div id="live-text" class="frame-text">امسح الكود</div>
-        </div>
-
-        <div class="floating-actions">
-            <button class="btn-download" onclick="exportFullImage()">تحميل التصميم كامل (PNG HD)</button>
-            <button class="btn-ghost" onclick="rawExport('svg')">SVG</button>
-            <button class="btn-ghost" onclick="rawExport('pdf')">PDF</button>
-        </div>
-    </div>
-
-    <aside class="sidebar">
-        <div class="group-title">البيانات</div>
-        <input type="text" id="data-in" class="control-input" placeholder="أدخل الرابط هنا..." oninput="refresh()">
+    <aside class="controls">
+        <h1>QR Studio Elite</h1>
         
-        <div class="group-title">نص الإطار</div>
-        <input type="text" id="text-in" class="control-input" placeholder="مثال: تابعنا على إنستغرام" oninput="refresh()">
+        <div class="field-group">
+            <label>الرابط أو النص</label>
+            <input type="text" id="qr-data" placeholder="https://google.com" oninput="draw()">
+        </div>
 
-        <div class="group-title">الألوان</div>
-        <div class="color-row">
-            <div class="color-item">
-                <input type="color" id="c1" value="#7000ff" oninput="refresh()">
-                <span style="font-size: 0.7rem;">الأساسي</span>
-            </div>
-            <div class="color-item">
-                <input type="color" id="c2" value="#00f2ff" oninput="updateQR()">
-                <span style="font-size: 0.7rem;">الثانوي</span>
+        <div class="field-group">
+            <label>النص السفلي (العربي)</label>
+            <input type="text" id="qr-text" placeholder="مثلاً: امسح للحجز" oninput="draw()">
+        </div>
+
+        <div class="field-group">
+            <label>الألوان</label>
+            <div class="color-grid">
+                <div class="color-input">
+                    <input type="color" id="c1" value="#007aff" oninput="draw()">
+                    <label>أساسي</label>
+                </div>
+                <div class="color-input">
+                    <input type="color" id="c2" value="#5856d6" oninput="draw()">
+                    <label>ثانوي</label>
+                </div>
             </div>
         </div>
 
-        <div class="group-title">خيارات متقدمة</div>
-        <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; cursor: pointer;">
-            <input type="checkbox" id="is-trans" onchange="refresh()" style="width: 20px; height: 20px;">
-            <span>خلفية شفافة</span>
-        </label>
+        <div class="field-group">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="trans-check" onchange="draw()"> تفعيل الخلفية الشفافة
+            </label>
+        </div>
 
-        <select id="dot-type" class="control-input" onchange="refresh()">
-            <option value="extra-rounded">نقاط دائرية</option>
-            <option value="square">مربعات</option>
-            <option value="dots">نقاط ناعمة</option>
-        </select>
+        <div class="field-group">
+            <label>شكل النقاط</label>
+            <select id="dot-style" onchange="draw()">
+                <option value="extra-rounded">دائري انسيابي</option>
+                <option value="square">مربعات</option>
+                <option value="dots">نقاط</option>
+            </select>
+        </div>
 
-        <input type="file" id="logo-in" class="control-input" onchange="refresh()">
+        <div class="field-group">
+            <label>إضافة شعار (Logo)</label>
+            <input type="file" id="logo-file" accept="image/*" onchange="draw()">
+        </div>
+
+        <button class="btn-download" onclick="downloadPNG()">تحميل التصميم كامل (PNG HD)</button>
+        
+        <div class="color-grid">
+            <button class="btn-secondary" onclick="qr.download({extension:'svg'})">SVG</button>
+            <button class="btn-secondary" onclick="qr.download({extension:'pdf'})">PDF</button>
+        </div>
     </aside>
-</div>
+
+    <main class="preview-zone">
+        <div id="export-container">
+            <div id="qr-holder"></div>
+            <div id="text-holder" class="qr-label">امسح الكود</div>
+        </div>
+    </main>
 
 <script>
-    const qrModel = new QRCodeStyling({
-        width: 350, height: 350,
-        dotsOptions: { type: "extra-rounded", gradient: { type: "linear", colorStops: [{ offset: 0, color: "#7000ff" }, { offset: 1, color: "#00f2ff" }] } },
+    // إعداد محرك الـ QR بمقاس ثابت
+    const qr = new QRCodeStyling({
+        width: 350,
+        height: 350,
+        dotsOptions: { type: "extra-rounded" },
         backgroundOptions: { color: "#ffffff" },
-        cornersSquareOptions: { type: "extra-rounded" }
+        imageOptions: { crossOrigin: "anonymous", margin: 10 }
     });
 
-    qrModel.append(document.getElementById("canvas-container"));
+    qr.append(document.getElementById("qr-holder"));
 
-    function refresh() {
-        const d = document.getElementById('data-in').value || "https://google.com";
-        const t = document.getElementById('text-in').value || "امسح الكود";
+    function draw() {
+        const data = document.getElementById('qr-data').value || " ";
+        const text = document.getElementById('qr-text').value || "امسح الكود";
         const c1 = document.getElementById('c1').value;
         const c2 = document.getElementById('c2').value;
-        const isT = document.getElementById('is-trans').checked;
-        const style = document.getElementById('dot-type').value;
-        const logo = document.getElementById('logo-in').files[0];
+        const isTrans = document.getElementById('trans-check').checked;
+        const style = document.getElementById('dot-style').value;
+        const logo = document.getElementById('logo-file').files[0];
 
-        const target = document.getElementById('render-target');
-        const liveText = document.getElementById('live-text');
+        const container = document.getElementById('export-container');
+        const textDiv = document.getElementById('text-holder');
 
-        // تحديث الواجهة
-        liveText.innerText = t;
-        if(isT) {
-            target.classList.add('transparent');
-            liveText.style.color = c1;
+        // تحديث النص والستايل
+        textDiv.innerText = text;
+        if(isTrans) {
+            container.classList.add('transparent');
+            textDiv.style.color = c1;
         } else {
-            target.classList.remove('transparent');
-            liveText.style.color = "#000";
+            container.classList.remove('transparent');
+            textDiv.style.color = "#1d1d1f";
         }
 
         // تحديث الكود
-        qrModel.update({
-            data: d,
-            dotsOptions: { type: style, gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] } },
-            backgroundOptions: { color: isT ? "transparent" : "#ffffff" },
+        qr.update({
+            data: data,
+            dotsOptions: { 
+                type: style,
+                gradient: { type: "linear", colorStops: [{ offset: 0, color: c1 }, { offset: 1, color: c2 }] }
+            },
+            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
             cornersSquareOptions: { color: c1 }
         });
 
         if (logo) {
             const reader = new FileReader();
-            reader.onload = (e) => qrModel.update({ image: e.target.result });
+            reader.onload = (e) => qr.update({ image: e.target.result });
             reader.readAsDataURL(logo);
         }
     }
 
-    // الحل النهائي لمشكلة "نصف الصورة" والحروف المقطعة
-    function exportFullImage() {
-        const node = document.getElementById('render-target');
-        const status = document.getElementById('status');
-        status.innerText = "PROCESSING...";
-
-        // إعدادات تصوير فائقة الدقة
-        const options = {
-            width: node.scrollWidth,
-            height: node.scrollHeight,
-            style: {
-                transform: 'scale(2)',
-                transformOrigin: 'top left',
-                width: node.offsetWidth + 'px',
-                height: node.offsetHeight + 'px'
+    // وظيفة التحميل السحرية التي تحل مشكلة "نصف الصورة"
+    async function downloadPNG() {
+        const element = document.getElementById('export-container');
+        
+        // تحسين دقة الصورة ومنع التقطع
+        const canvas = await html2canvas(element, {
+            scale: 3, // دقة عالية جداً
+            useCORS: true,
+            backgroundColor: null,
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+            onclone: (clonedDoc) => {
+                // نضمن أن العنصر ظاهر تماماً في النسخة المستنسخة للتصوير
+                clonedDoc.getElementById('export-container').style.display = 'flex';
             }
-        };
+        });
 
-        domtoimage.toPng(node, options)
-            .then(function (dataUrl) {
-                const link = document.createElement('a');
-                link.download = `QR-Studio-Pro-2026.png`;
-                link.href = dataUrl;
-                link.click();
-                status.innerText = "READY / DOWNLOADED";
-            })
-            .catch(function (error) {
-                console.error('Error:', error);
-                status.innerText = "ERROR";
-            });
+        const img = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.download = `QR-Elite-Design.png`;
+        link.href = img;
+        link.click();
     }
 
-    function rawExport(ext) { qrModel.download({ extension: ext }); }
-
-    refresh();
+    // تشغيل أولي
+    draw();
 </script>
-
 </body>
 </html>
