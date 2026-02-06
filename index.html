@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qrestige | النسخة المستقرة</title>
+    <title>Qrestige | الإصدار المستقر والنهائي</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
@@ -28,22 +28,25 @@
 
         .preview-area { flex: 1; display: flex; align-items: center; justify-content: center; background: #f1f5f9; }
         
-        /* الحاوية المستهدفة للتحميل */
         #export-wrap {
             background: white; padding: 50px; border-radius: 40px;
             display: flex; flex-direction: column; align-items: center;
-            width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            width: 500px; transition: 0.3s;
         }
+
+        #export-wrap.is-transparent { background: none !important; box-shadow: none; border: 2px dashed var(--accent); }
 
         .qr-text { margin-top: 25px; font-size: 32px; font-weight: 900; color: var(--brand); text-align: center; }
 
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
         .btn-save {
             background: var(--brand); color: white; border: none; padding: 18px;
-            border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: auto;
+            border-radius: 12px; font-weight: 700; cursor: pointer;
         }
-        .btn-save:hover { background: #1e293b; }
-
-        #temp-buffer { position: absolute; left: -9999px; top: 0; }
+        .btn-svg {
+            background: white; color: var(--brand); border: 2px solid var(--brand);
+            padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -59,14 +62,23 @@
 
         <div class="label">الألوان</div>
         <div style="display: flex; gap: 10px;">
-            <input type="color" id="c1" value="#0f172a" oninput="draw()" style="flex:1; height: 40px;">
-            <input type="color" id="c2" value="#6366f1" oninput="draw()" style="flex:1; height: 40px;">
+            <input type="color" id="c1" value="#0f172a" oninput="draw()" style="flex:1; height: 40px; cursor: pointer;">
+            <input type="color" id="c2" value="#6366f1" oninput="draw()" style="flex:1; height: 40px; cursor: pointer;">
         </div>
 
         <div class="label">الشعار</div>
         <input type="file" id="logo-file" onchange="draw()">
 
-        <button class="btn-save" onclick="downloadFullDesign()">تحميل التصميم كامل PNG</button>
+        <div style="margin: 20px 0;">
+            <label style="display: flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer;">
+                <input type="checkbox" id="trans-check" onchange="draw()"> خلفية شفافة
+            </label>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-save" onclick="downloadPNG()">تحميل PNG عالي الجودة</button>
+            <button class="btn-svg" onclick="downloadSVG()">تحميل ملف SVG (موصى به)</button>
+        </div>
     </aside>
 
     <main class="preview-area">
@@ -75,8 +87,6 @@
             <div id="text-display" class="qr-text">امسح الكود</div>
         </div>
     </main>
-
-    <div id="temp-buffer"></div>
 
 <script>
     const qr = new QRCodeStyling({
@@ -93,13 +103,25 @@
         const l = document.getElementById('in-label').value || "امسح الكود";
         const color1 = document.getElementById('c1').value;
         const color2 = document.getElementById('c2').value;
+        const isTrans = document.getElementById('trans-check').checked;
         const file = document.getElementById('logo-file').files[0];
 
-        document.getElementById('text-display').innerText = l;
+        const wrap = document.getElementById('export-wrap');
+        const txt = document.getElementById('text-display');
+
+        txt.innerText = l;
+        if(isTrans) {
+            wrap.classList.add('is-transparent');
+            txt.style.color = color1;
+        } else {
+            wrap.classList.remove('is-transparent');
+            txt.style.color = "#0f172a";
+        }
 
         qr.update({
             data: d,
             dotsOptions: { gradient: { type: "linear", colorStops: [{ offset: 0, color: color1 }, { offset: 1, color: color2 }] } },
+            backgroundOptions: { color: isTrans ? "transparent" : "#ffffff" },
             cornersSquareOptions: { color: color1 }
         });
 
@@ -110,35 +132,27 @@
         }
     }
 
-    async function downloadFullDesign() {
-        // خطوة 1: تحويل الـ QR إلى صورة Canvas ثابتة داخل العنصر لمنع اختفائه
-        const qrCanvas = document.querySelector('#qr-container canvas');
-        if (!qrCanvas) return alert("يرجى الانتظار ثانية حتى يتم رسم الكود");
-
+    // الحل الجذري لمشكلة اختفاء الكود في PNG
+    async function downloadPNG() {
         const container = document.getElementById('export-wrap');
-        const buffer = document.getElementById('temp-buffer');
         
-        // خطوة 2: إنشاء نسخة مطابقة (Clone) في منطقة الحفظ
-        buffer.innerHTML = "";
-        const clone = container.cloneNode(true);
-        clone.style.width = "600px";
-        buffer.appendChild(clone);
-
-        // خطوة 3: التقاط الصورة بدقة عالية 3x
-        setTimeout(async () => {
-            const canvas = await html2canvas(clone, {
-                scale: 3,
-                backgroundColor: "#ffffff",
-                useCORS: true,
-                allowTaint: true
-            });
-
+        // ننتظر رسم الكود تماماً
+        html2canvas(container, {
+            scale: 3,
+            backgroundColor: null,
+            useCORS: true,
+            logging: false
+        }).then(canvas => {
             const link = document.createElement('a');
             link.download = `Qrestige_Design.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-            buffer.innerHTML = "";
-        }, 300); // مهلة انتظار بسيطة لضمان الرندر
+        });
+    }
+
+    // الحفظ بصيغة SVG (الأذكى والأفضل للجودة)
+    function downloadSVG() {
+        qr.download({ name: "Qrestige_Vector", extension: "svg" });
     }
 
     draw();
