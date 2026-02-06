@@ -2,10 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Qrestige PRO Ultimate</title>
+<title>Qrestige PRO Ultimate - عربي</title>
 
+<!-- Google Font Tajawal -->
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
+<!-- المكتبات -->
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -20,8 +22,8 @@
 --text-dark:#0d0f14;
 --text-light:#fff;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Tajawal;display:flex;height:100vh;transition:.3s;}
+*{box-sizing:border-box;font-family:'Tajawal',sans-serif;}
+body{margin:0;display:flex;height:100vh;transition:.3s;}
 aside{width:360px;padding:20px;overflow:auto;transition:.3s;}
 main{flex:1;display:flex;justify-content:center;align-items:center;transition:.3s;}
 .stage{padding:40px;background:#111;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;transition:.3s;}
@@ -40,7 +42,7 @@ input[type=color]{padding:2px;height:36px}
 body.light{background:var(--light-bg);color:var(--text-dark);}
 body.light aside{background:var(--light-panel);}
 body.light .tab{background:#ccc;color:#0d0f14;}
-body.light .tab.active{background:var(--accent);color:#fff;}
+body.light .tab.active{background:var(--accent);color:#fff;font-weight:700;}
 main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px);background-size:18px 18px;}
 .stage.light{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.2);}
 .caption.light{color:#0d0f14;}
@@ -49,44 +51,44 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <body class="dark">
 
 <aside>
-<h2>Qrestige PRO Ultimate</h2>
+<h2>كيو بريستيج PRO Ultimate</h2>
 <div class="tabs">
-<div class="tab active" data-tab="content">Content</div>
-<div class="tab" data-tab="style">Style</div>
-<div class="tab" data-tab="logo">Logo</div>
-<div class="tab" data-tab="export">Export</div>
+<div class="tab active" data-tab="content">المحتوى</div>
+<div class="tab" data-tab="style">التصميم</div>
+<div class="tab" data-tab="logo">الشعار</div>
+<div class="tab" data-tab="export">التصدير</div>
 </div>
 
 <div id="content" class="tab-content active">
-<label>Data</label><input id="data" value="https://example.com">
-<label>Caption</label><input id="caption" value="SCAN ME">
+<label>رابط / نص QR</label><input id="data" value="https://example.com">
+<label>النص السفلي</label><input id="caption" value="امسح هنا">
 </div>
 
 <div id="style" class="tab-content">
-<label>Gradient Start</label><input type="color" id="c1" value="#000000">
-<label>Gradient End</label><input type="color" id="c2" value="#7c7cff">
-<label>Error Correction</label>
+<label>لون التدرج البداية</label><input type="color" id="c1" value="#000000">
+<label>لون التدرج النهاية</label><input type="color" id="c2" value="#7c7cff">
+<label>مستوى تصحيح الخطأ</label>
 <select id="error">
 <option value="L">L</option><option value="M">M</option>
 <option value="Q">Q</option><option value="H" selected>H</option>
 </select>
-<label>Margin</label><input type="range" id="margin" min="0" max="20" value="6">
-<label><input type="checkbox" id="transparent"> Absolute Transparency</label>
-<label><input type="checkbox" id="safe"> Safe Zone Checker</label>
-<label><input type="checkbox" id="themeSwitch"> Light Theme</label>
+<label>الهامش</label><input type="range" id="margin" min="0" max="20" value="6">
+<label><input type="checkbox" id="transparent"> الشفافية المطلقة</label>
+<label><input type="checkbox" id="safe"> منطقة الأمان للشعار</label>
+<label><input type="checkbox" id="themeSwitch"> الوضع الفاتح</label>
 </div>
 
 <div id="logo" class="tab-content">
-<label>Logo</label><input type="file" id="logoInput">
-<label>Logo Size (%)</label><input type="range" id="logoSize" min="10" max="40" value="25">
+<label>اختر شعار</label><input type="file" id="logoInput">
+<label>حجم الشعار (%)</label><input type="range" id="logoSize" min="10" max="40" value="25">
 </div>
 
 <div id="export" class="tab-content">
-<button onclick="savePreset()">Save Preset</button>
-<button class="secondary" onclick="loadPreset()">Load Preset</button>
-<button onclick="exportPNG()">Export PNG</button>
-<button onclick="exportPDF()">Export PDF</button>
-<button onclick="exportSVG()">Export SVG</button>
+<button onclick="savePreset()">حفظ الإعدادات</button>
+<button class="secondary" onclick="loadPreset()">تحميل الإعدادات</button>
+<button onclick="exportPNG()">تصدير PNG</button>
+<button onclick="exportPDF()">تصدير PDF</button>
+<button onclick="exportSVG()">تصدير SVG</button>
 </div>
 </aside>
 
@@ -94,7 +96,7 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <div class="stage" id="stage">
 <div id="qr"></div>
 <div id="safeZone"></div>
-<div class="caption" id="cap">SCAN ME</div>
+<div class="caption" id="cap">امسح هنا</div>
 </div>
 </main>
 
@@ -131,7 +133,7 @@ sz.style.transform="translate(-50%,-50%)";
 }else sz.style.display="none";
 }
 
-// Tab switching
+// تبويبات
 document.querySelectorAll(".tab").forEach(tab=>{
 tab.onclick=()=>{
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -158,7 +160,7 @@ data:data.value,caption:caption.value,
 c1:c1.value,c2:c2.value,
 logoSize:logoSize.value,error:error.value,margin:margin.value
 });
-alert("Preset Saved");
+alert("تم حفظ الإعدادات");
 }
 function loadPreset(){
 const p=JSON.parse(localStorage.qrestige||"{}");
@@ -173,7 +175,7 @@ margin.value=p.margin||margin.value;
 update();
 }
 
-// Theme Switch
+// Theme
 themeSwitch.onchange=()=>{document.body.classList.toggle("light",themeSwitch.checked);
 main.classList.toggle("light",themeSwitch.checked);
 stage.classList.toggle("light",themeSwitch.checked);
