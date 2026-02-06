@@ -2,53 +2,48 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Qrestige PRO Ultimate - عربي UI/UX محترف</title>
+<title>Qrestige PRO Ultimate – عربي UI/UX احترافي</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-
-<!-- مكتبات QR + Export -->
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
 :root{
---dark-bg:#0d0f14; --light-bg:#f5f5f5;
---dark-panel:#141622; --light-panel:#eaeaea;
---accent:#7c7cff;
---text-dark:#0d0f14; --text-light:#fff;
---safeZoneColor:rgba(255,0,0,0.5);
+--dark-bg:#1E1E2F; --dark-panel:#28293D; --accent:#7C7CFF; --safeZoneColor:rgba(255,111,97,0.5);
+--light-bg:#F5F5F5; --light-panel:#FFFFFF; --text-dark:#1E1E2F; --text-light:#FFFFFF;
 }
-*{box-sizing:border-box;font-family:'Tajawal',sans-serif;}
-body{margin:0;display:flex;height:100vh;transition:.3s;}
-aside{width:380px;padding:20px;overflow:auto;background:var(--dark-panel);transition:.3s;display:flex;flex-direction:column;}
-aside h2{text-align:center;margin-bottom:15px;}
-main{flex:1;display:flex;justify-content:center;align-items:center;transition:.3s;}
-.stage{padding:40px;background:#111;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;transition:.3s;width:320px;height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+*{box-sizing:border-box;font-family:'Tajawal',sans-serif;margin:0;padding:0;}
+body{display:flex;height:100vh;transition:.3s;}
+aside{width:400px;padding:25px;overflow:auto;background:var(--dark-panel);display:flex;flex-direction:column;gap:15px;transition:.3s;}
+aside h2{text-align:center;font-weight:900;margin-bottom:15px;color:var(--text-light);}
+main{flex:1;display:flex;justify-content:center;align-items:center;transition:.3s;background:var(--dark-bg);}
+.stage{width:360px;height:360px;background:#111;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.6);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:.3s;}
 .stage.transparent{background:none;box-shadow:none;padding:0;}
 #safeZone{position:absolute;border:2px dashed var(--safeZoneColor);border-radius:50%;pointer-events:none;display:none;}
-.caption{text-align:center;margin-top:16px;font-weight:900;font-size:22px;transition:.3s;}
-.tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
-.tab{flex:1;padding:8px;background:#2a2d3d;color:#fff;text-align:center;cursor:pointer;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:5px;font-weight:700;}
-.tab.active{background:var(--accent);color:#fff;}
-.tab-content{display:none;flex-direction:column;gap:10px;}
+.caption{text-align:center;margin-top:16px;font-weight:900;font-size:22px;color:var(--text-light);}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.tab{flex:1;padding:10px;background:#2a2d3d;color:#fff;text-align:center;cursor:pointer;border-radius:8px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;transition:.3s;}
+.tab.active{background:var(--accent);}
+.tab:hover{opacity:.9;}
+.tab-content{display:none;flex-direction:column;gap:12px;}
 .tab-content.active{display:flex;}
-input,select,button{padding:8px;border-radius:6px;border:none;font-family:inherit}
-button{background:var(--accent);color:#fff;font-weight:700;cursor:pointer;transition:.3s;}
+input,select,button{padding:10px;border-radius:8px;border:none;font-family:inherit;transition:.3s;}
+input[type=color]{padding:3px;height:38px;}
+button{background:var(--accent);color:#fff;font-weight:700;cursor:pointer;}
 button:hover{opacity:.9;}
 button.secondary{background:#2a2d3d;}
-input[type=color]{padding:2px;height:36px;}
-body.light{background:var(--light-bg);color:var(--text-dark);}
-body.light aside{background:var(--light-panel);}
-body.light .tab{background:#ccc;color:#0d0f14;}
-body.light .tab.active{background:var(--accent);color:#fff;}
-main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px);background-size:18px 18px;}
-.stage.light{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.2);}
-.caption.light{color:#0d0f14;}
 .slider-container{display:flex;align-items:center;gap:10px;}
 .slider-container input{flex:1;}
 .template-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.template-grid button{padding:10px;background:#2a2d3d;color:#fff;border-radius:10px;font-weight:700;transition:.3s;}
+.template-grid button{padding:12px;background:#2a2d3d;color:#fff;border-radius:12px;font-weight:700;transition:.3s;}
 .template-grid button:hover{background:var(--accent);}
+body.light main{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px);background-size:18px 18px;}
+body.light .stage{background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.2);}
+body.light .caption{color:var(--text-dark);}
+body.light aside{background:var(--light-panel);}
+body.light .tab{background:#ccc;color:var(--text-dark);}
+body.light .tab.active{background:var(--accent);color:#fff;}
 </style>
 </head>
 <body class="dark">
@@ -63,16 +58,16 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <div class="tab" data-tab="export">التصدير</div>
 </div>
 
-<!-- المحتوى -->
+<!-- Content -->
 <div id="content" class="tab-content active">
 <label>رابط / نص QR</label><input id="data" value="https://example.com">
 <label>النص السفلي</label><input id="caption" value="امسح هنا">
 </div>
 
-<!-- التصميم -->
+<!-- Style -->
 <div id="style" class="tab-content">
 <label>لون التدرج البداية</label><input type="color" id="c1" value="#000000">
-<label>لون التدرج النهاية</label><input type="color" id="c2" value="#7c7cff">
+<label>لون التدرج النهاية</label><input type="color" id="c2" value="#7C7CFF">
 <label>مستوى تصحيح الخطأ</label>
 <select id="error">
 <option value="L">L</option><option value="M">M</option>
@@ -87,7 +82,7 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <label><input type="checkbox" id="themeSwitch"> الوضع الفاتح</label>
 </div>
 
-<!-- الشعار -->
+<!-- Logo -->
 <div id="logo" class="tab-content">
 <label>اختر شعار</label><input type="file" id="logoInput">
 <div class="slider-container">
@@ -96,7 +91,7 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 </div>
 </div>
 
-<!-- القوالب -->
+<!-- Templates -->
 <div id="templates" class="tab-content">
 <div class="template-grid">
 <button onclick="applyTemplate('corporate')">قالب رسمي</button>
@@ -107,7 +102,7 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 </div>
 </div>
 
-<!-- التصدير -->
+<!-- Export -->
 <div id="export" class="tab-content">
 <button onclick="savePreset()">حفظ الإعدادات</button>
 <button class="secondary" onclick="loadPreset()">تحميل الإعدادات</button>
@@ -128,7 +123,7 @@ main.light{background:radial-gradient(circle,rgba(0,0,0,.05) 1px,transparent 1px
 <script>
 let logoData=null;
 const qr=new QRCodeStyling({
-width:320,height:320,type:"canvas",
+width:360,height:360,type:"canvas",
 dotsOptions:{type:"extra-rounded"},
 backgroundOptions:{color:"transparent"}
 });
@@ -136,11 +131,11 @@ qr.append(document.getElementById("qr"));
 
 // Templates
 const templates={
-corporate:{c1:'#000000',c2:'#7c7cff',caption:'امسح هنا',error:'H',margin:6,logoSize:25},
-event:{c1:'#ff4d4d',c2:'#ffcc00',caption:'فعالية اليوم',error:'Q',margin:6,logoSize:30},
-minimal:{c1:'#555',c2:'#aaa',caption:'مسح سريع',error:'M',margin:4,logoSize:20},
+corporate:{c1:'#1E1E2F',c2:'#7C7CFF',caption:'امسح هنا',error:'H',margin:6,logoSize:25},
+event:{c1:'#FF4D4D',c2:'#FFCC00',caption:'فعالية اليوم',error:'Q',margin:6,logoSize:30},
+minimal:{c1:'#555555',c2:'#AAAAAA',caption:'مسح سريع',error:'M',margin:4,logoSize:20},
 luxury:{c1:'#FFD700',c2:'#8B0000',caption:'فاخر',error:'H',margin:6,logoSize:25},
-tech:{c1:'#00ffff',c2:'#0000ff',caption:'Tech QR',error:'Q',margin:6,logoSize:25}
+tech:{c1:'#00D8FF',c2:'#0044FF',caption:'Tech QR',error:'Q',margin:6,logoSize:25}
 };
 
 function applyTemplate(name){
