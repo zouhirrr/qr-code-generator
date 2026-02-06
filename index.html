@@ -2,167 +2,274 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مولّد رمز QR احترافي</title>
+  <title>Qrestige – Pro QR Generator</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <style>
-    * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+    :root {
+      --bg-dark: #0f0f12;
+      --panel: #16161d;
+      --accent: #7c7cff;
+      --text: #f5f5f7;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      margin: 0; min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a, #312e81);
-      display: flex; align-items: center; justify-content: center;
+      margin: 0;
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
-    .container {
-      background: #fff; width: 100%; max-width: 1000px;
-      border-radius: 24px; padding: 30px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      background: var(--panel);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
-    h1 { text-align: center; font-weight: 900; margin-bottom: 10px; }
-    .subtitle { text-align: center; color: #6b7280; margin-bottom: 30px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-    @media (max-width: 768px){ .grid{ grid-template-columns:1fr;} }
-    label { font-weight: 700; display: block; margin-bottom: 6px; }
-    input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #d1d5db; margin-bottom: 15px; }
-    input[type=color]{ height: 45px; padding: 4px; }
-    button { width: 100%; padding: 14px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
-    .primary { background: linear-gradient(135deg, #4f46e5, #9333ea); color: #fff; }
-    .secondary { background:#10b981; color:#fff; margin-top:10px; }
-    .qr-box { border:2px dashed #e5e7eb; border-radius:20px; padding:20px; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+    .sidebar h2 {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .control {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+    }
+
+    input[type="color"] {
+      padding: 3px;
+      height: 40px;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+
+    button.secondary {
+      background: #2a2a35;
+    }
+
+    /* Viewer */
+    .viewer {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.07) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .stage {
+      padding: 40px;
+      background: #111;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      text-align: center;
+      transition: all .3s ease;
+    }
+
+    .stage.transparent {
+      background: none;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    #qr-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    .caption {
+      margin-top: 16px;
+      font-weight: 900;
+      font-size: 22px;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>مولّد رمز QR الذكي</h1>
-  <p class="subtitle">معاينة لحظية + تدرّج لوني + خلفية شفافة</p>
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Qrestige</h2>
 
-  <div class="grid">
-    <div>
-      <label>النص أو الرابط</label>
-      <input id="text" placeholder="https://example.com" oninput="liveUpdate()" />
+  <div class="control">
+    <label>المحتوى</label>
+    <input id="qrData" value="https://example.com" />
+  </div>
 
-      <label>الحجم</label>
-      <select id="size" onchange="liveUpdate()">
-        <option value="200">متوسط</option>
-        <option value="300">كبير</option>
-        <option value="400">كبير جدًا</option>
-      </select>
+  <div class="control">
+    <label>النص السفلي</label>
+    <input id="caption" value="SCAN ME" />
+  </div>
 
-      <label>لون البداية (تدرّج)</label>
-      <input type="color" id="color1" value="#000000" oninput="liveUpdate()" />
+  <div class="control">
+    <label>لون التدرج (بداية)</label>
+    <input type="color" id="color1" value="#000000" />
+  </div>
 
-      <label>لون النهاية (تدرّج)</label>
-      <input type="color" id="color2" value="#4f46e5" oninput="liveUpdate()" />
+  <div class="control">
+    <label>لون التدرج (نهاية)</label>
+    <input type="color" id="color2" value="#7c7cff" />
+  </div>
 
-      <label>الخلفية</label>
-      <select id="bgMode" onchange="liveUpdate()">
-        <option value="white">بيضاء</option>
-        <option value="transparent">شفافة</option>
-      </select>
+  <div class="control">
+    <label>شعار (Logo)</label>
+    <input type="file" id="logoInput" accept="image/*" />
+  </div>
 
-      <button class="primary" onclick="generateQR()">إعادة التوليد</button>
-    </div>
+  <div class="control">
+    <label>
+      <input type="checkbox" id="transparentMode" />
+      وضع الشفافية المطلقة
+    </label>
+  </div>
 
-    <div class="qr-box">
-      <canvas id="canvas"></canvas>
-      <button class="secondary" onclick="downloadPNG()">تحميل PNG</button>
-      <button class="secondary" onclick="downloadPDF()">تحميل PDF</button>
-    </div>
+  <button onclick="exportPNG()">Export PNG</button>
+  <button class="secondary" onclick="exportPDF()">Export PDF</button>
+</div>
+
+<!-- Viewer -->
+<div class="viewer">
+  <div class="stage" id="stage">
+    <div id="qr-wrapper"></div>
+    <div class="caption" id="captionView">SCAN ME</div>
   </div>
 </div>
 
 <script>
-let baseQRCanvas = null;
+  const qrWrapper = document.getElementById("qr-wrapper");
+  const captionView = document.getElementById("captionView");
+  const stage = document.getElementById("stage");
 
-function generateQR(){
-  const text = document.getElementById('text').value.trim();
-  if(!text){ return; }
+  let logoImage = null;
 
-  const size = parseInt(document.getElementById('size').value);
-  const bgMode = document.getElementById('bgMode').value;
-
-  const temp = document.createElement('div');
-  new QRCode(temp, {
-    text,
-    width:size,
-    height:size,
-    colorDark:'#000000',
-    colorLight: bgMode==='transparent' ? 'rgba(0,0,0,0)' : '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
+  const qr = new QRCodeStyling({
+    width: 300,
+    height: 300,
+    type: "canvas",
+    data: "https://example.com",
+    dotsOptions: {
+      type: "extra-rounded",
+      gradient: {
+        type: "linear",
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: "#000000" },
+          { offset: 1, color: "#7c7cff" }
+        ]
+      }
+    },
+    backgroundOptions: { color: "transparent" },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 6
+    }
   });
 
-  baseQRCanvas = temp.querySelector('canvas');
-  repaintQR();
-}
+  qr.append(qrWrapper);
 
-function repaintQR(){
-  if(!baseQRCanvas) return;
+  function updateQR() {
+    const c1 = color1.value;
+    const c2 = color2.value;
 
-  const size = parseInt(document.getElementById('size').value);
-  const bgMode = document.getElementById('bgMode').value;
-  const canvas = document.getElementById('canvas');
-  canvas.width = size;
-  canvas.height = size;
+    qr.update({
+      data: qrData.value,
+      image: logoImage,
+      dotsOptions: {
+        gradient: {
+          colorStops: [
+            { offset: 0, color: c1 },
+            { offset: 1, color: c2 }
+          ]
+        }
+      }
+    });
 
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0,0,size,size);
+    captionView.textContent = caption.value;
+    captionView.style.color = c1;
 
-  if(bgMode === 'white'){
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0,0,size,size);
+    if (transparentMode.checked) {
+      stage.classList.add("transparent");
+    } else {
+      stage.classList.remove("transparent");
+    }
   }
 
-  const grad = ctx.createLinearGradient(0,0,size,size);
-  grad.addColorStop(0, document.getElementById('color1').value);
-  grad.addColorStop(1, document.getElementById('color2').value);
+  document.querySelectorAll("input").forEach(el =>
+    el.addEventListener("input", updateQR)
+  );
 
-  ctx.drawImage(baseQRCanvas,0,0,size,size);
-  ctx.// إصلاح مشكلة الكتلة الواحدة: نرسم التدرج ثم نطبّق قناع QR
-ctx.clearRect(0,0,size,size);
+  logoInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      logoImage = reader.result;
+      updateQR();
+    };
+    reader.readAsDataURL(file);
+  });
 
-// رسم التدرج
-const grad = ctx.createLinearGradient(0,0,size,size);
-grad.addColorStop(0, color1);
-grad.addColorStop(1, color2);
-ctx.fillStyle = grad;
-ctx.fillRect(0,0,size,size);
+  async function exportPNG() {
+    const canvas = await html2canvas(stage, {
+      scale: 3,
+      backgroundColor: null,
+      useCORS: true
+    });
+    const link = document.createElement("a");
+    link.download = "qrestige.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
 
-// قناع QR (الحفاظ على المربعات)
-ctx.globalCompositeOperation = 'destination-in';
-ctx.drawImage(qrCanvas,0,0,size,size);
-ctx.globalCompositeOperation = 'source-over'; = 'source-in';
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,size,size);
-  ctx.globalCompositeOperation = 'source-over';
-}
+  async function exportPDF() {
+    const canvas = await html2canvas(stage, {
+      scale: 4,
+      backgroundColor: null,
+      useCORS: true
+    });
 
-function liveUpdate(){
-  if(!baseQRCanvas){ generateQR(); return; }
-  repaintQR();
-}
+    const img = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [canvas.width, canvas.height]
+    });
 
-function downloadPNG(){
-  const canvas = document.getElementById('canvas');
-  if(!canvas.width){ alert('أنشئ QR أولاً'); return; }
-  const a = document.createElement('a');
-  a.href = canvas.toDataURL('image/png');
-  a.download = 'qr-code.png';
-  a.click();
-}
-
-function downloadPDF(){
-  const canvas = document.getElementById('canvas');
-  if(!canvas.width){ alert('أنشئ QR أولاً'); return; }
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  const img = canvas.toDataURL('image/png');
-  pdf.addImage(img,'PNG',20,20,170,170);
-  pdf.save('qr-code.pdf');
-}
+    pdf.addImage(img, "PNG", 0, 0);
+    pdf.save("qrestige-print.pdf");
+  }
 </script>
 
 </body>
