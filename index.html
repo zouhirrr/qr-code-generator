@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Pro Max | مولد الأكواد الذكي</title>
-    <script src="https://cdn.jsdelivr.net/npm/easyqrcodejs@4.4.13/dist/easy.qrcode.min.js"></script>
+    <title>QR Pro Max | 2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -15,13 +15,12 @@
         body {
             background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
             color: white;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         .glass-card {
@@ -29,111 +28,83 @@
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 40px;
-            width: 100%;
-            max-width: 450px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.6s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             background: linear-gradient(to right, #818cf8, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        p { color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem; }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
+        p { color: #94a3b8; margin-bottom: 25px; font-size: 0.85rem; }
 
         input {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             background: rgba(0, 0, 0, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: white;
             font-size: 16px;
-            transition: 0.3s;
+            margin-bottom: 20px;
             box-sizing: border-box;
-            text-align: center;
-        }
-
-        input:focus {
-            border-color: var(--primary);
             outline: none;
-            background: rgba(0, 0, 0, 0.4);
+            transition: 0.3s;
         }
 
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .color-picker {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            font-size: 12px;
-        }
+        input:focus { border-color: var(--primary); background: rgba(0, 0, 0, 0.4); }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border-radius: 12px;
             border: none;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 16px;
         }
 
         .btn-generate {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+            margin-bottom: 15px;
         }
 
-        .btn-generate:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-generate:hover { transform: scale(1.02); }
 
         #qrcode {
-            margin-top: 30px;
-            padding: 20px;
+            margin: 20px auto;
+            padding: 15px;
             background: white;
-            border-radius: 20px;
-            display: inline-block;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: scale(0);
+            border-radius: 15px;
+            display: none; /* يظهر فقط عند التوليد */
+            width: fit-content;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #qrcode.show { transform: scale(1); }
-
-        .download-container {
-            margin-top: 20px;
-            display: none;
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
         }
 
         .btn-download {
             background: #ffffff;
             color: #0f172a;
-            font-size: 14px;
+            display: none;
         }
     </style>
 </head>
@@ -141,80 +112,46 @@
 
 <div class="glass-card">
     <h1>QR PRO MAX</h1>
-    <p>حوّل روابطك إلى تجربة رقمية أنيقة</p>
+    <p>أحدث تكنولوجيا توليد الأكواد لعام 2026</p>
 
-    <div class="input-group">
-        <input type="text" id="qrText" placeholder="أدخل الرابط (مثلاً رابط العيادة)...">
-    </div>
-
-    <div class="controls">
-        <div class="color-picker">
-            <span>لون الكود:</span>
-            <input type="color" id="dotColor" value="#6366f1" style="width: 30px; height: 30px; padding: 0; border: none;">
-        </div>
-        <div class="color-picker">
-            <span>الخلفية:</span>
-            <input type="color" id="bgColor" value="#ffffff" style="width: 30px; height: 30px; padding: 0; border: none;">
-        </div>
-    </div>
-
-    <button class="btn-generate" onclick="generateQR()">توليد الرمز الذكي</button>
-
+    <input type="text" id="qrText" placeholder="أدخل الرابط هنا...">
+    
+    <button class="btn-generate" onclick="generateQR()">توليد الرمز الآن</button>
+    
     <div id="qrcode"></div>
-
-    <div class="download-container" id="dlContainer">
-        <button class="btn-download" onclick="downloadQR()">تحميل بصيغة PNG</button>
-    </div>
+    
+    <button id="dlBtn" class="btn-download" onclick="downloadQR()">حفظ كصورة PNG</button>
 </div>
 
 <script>
-    let qrcodeInstance = null;
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width: 200,
+        height: 200,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
 
     function generateQR() {
-        const text = document.getElementById("qrText").value;
-        const dotColor = document.getElementById("dotColor").value;
-        const bgColor = document.getElementById("bgColor").value;
-        const qrContainer = document.getElementById("qrcode");
-
+        var text = document.getElementById("qrText").value;
         if (!text) {
-            alert("أدخل الرابط أولاً يا بطل!");
+            alert("يرجى إدخال الرابط أولاً!");
             return;
         }
 
-        // مسح الكود القديم
-        qrContainer.innerHTML = "";
-        qrContainer.classList.remove("show");
-
-        // إعدادات احترافية جداً
-        const options = {
-            text: text,
-            width: 200,
-            height: 200,
-            colorDark: dotColor,
-            colorLight: bgColor,
-            correctLevel: QRCode.CorrectLevel.H, // حماية عالية عند التلف
-            dotScale: 0.8, // شكل النقاط عصري
-            
-            // إضافة ميزة الشعار (يمكنك استبدال الرابط بشعار الطبيب)
-            logo: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
-            logoWidth: 50,
-            logoHeight: 50,
-            logoBackgroundColor: '#ffffff',
-            logoBackgroundTransparent: false
-        };
-
-        setTimeout(() => {
-            qrcodeInstance = new EasyQRCode(qrContainer, options);
-            qrContainer.classList.add("show");
-            document.getElementById("dlContainer").style.display = "block";
-        }, 300);
+        qrcode.makeCode(text);
+        
+        // إظهار العناصر مع أنيميشن
+        document.getElementById("qrcode").style.display = "block";
+        document.getElementById("dlBtn").style.display = "block";
     }
 
     function downloadQR() {
-        const canvas = document.querySelector("#qrcode canvas");
-        const link = document.createElement("a");
-        link.download = "Smart-QR-Doctor.png";
-        link.href = canvas.toDataURL();
+        var canvas = document.querySelector("#qrcode canvas");
+        var img = canvas.toDataURL("image/png");
+        var link = document.createElement("a");
+        link.download = "My-Smart-QR.png";
+        link.href = img;
         link.click();
     }
 </script>
